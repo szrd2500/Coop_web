@@ -1,21 +1,16 @@
-'use strict';
-var command_name = "",
-    command_map = {},
-    ipPortList = {},
-    token = "";
-
+var command_map = {},
+    command_name = "",
+    ipPortList = {};
+    
 $(function () {
     var h = document.documentElement.clientHeight;
     $(".table_block").css("max-height", h - 80 + "px");
 
-    token = getToken();
-    /*
+    loadUserData();
+    /**
      * Check this page's permission and load navbar
      */
-    if (!getPermissionOfPage("Reference")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    checkPermissionOfPage("Reference");
     setNavBar("Reference", "Advance_cmd");
 
     $("#cmd_read").on("change", function () {

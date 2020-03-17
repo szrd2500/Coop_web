@@ -1,9 +1,8 @@
-var token = "";
 var default_color = '#2eb82e';
 var chart_type = "";
 
 $(function () {
-    token = getToken();
+    loadUserData();
 
     var dialog, form,
         select_node = $('#selected-node');

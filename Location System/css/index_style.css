@@ -252,7 +252,7 @@ input[type="file"] {
 }
 
 .btn-mode.selected {
-
+    
     background: rgb(166, 208, 228);
 }
 
@@ -353,6 +353,7 @@ input[type="file"] {
 }
 
 /* Model */
+
 .modal-body {
     background: #36a4ff63;
     border-radius: 5px;
@@ -380,6 +381,33 @@ input[type="file"] {
     border: none;
 }
 
+.alert_block {
+    top: 10px;
+    left: 40%;
+    position: absolute;
+    display: none;
+    margin: auto;
+    width: auto;
+    height: auto;
+    padding: 10px 14px;
+    -moz-box-shadow: 4px 4px 12px -2px rgb(97, 96, 96);
+    -webkit-box-shadow: 4px 4px 12px -2px rgb(97, 96, 96);
+    box-shadow: 4px 4px 12px -2px rgb(97, 96, 96);
+    border-radius: 5px;
+    background: rgb(94, 191, 255);
+    color: rgb(0, 0, 0);
+    opacity: 100;
+    filter: alpha(opacity=100);
+}
+
+.alert_block.fadeOut {
+    -webkit-transition: opacity .5s linear;
+    -moz-transition: opacity .5s linear;
+    -o-transition: opacity .5s linear;
+    transition: opacity .5s linear;
+    opacity: 0;
+}
+
 .canvas-modes {
     margin-top: 5px;
     border: 1px solid lightgray;
@@ -392,8 +420,4 @@ input[type="file"] {
 
 .canvas-modes i {
     margin: auto;
-}
-
-.dialog {
-    font-family: 'Microsoft JhengHei', 'sans-serif';
 }

@@ -1,16 +1,12 @@
-var token = "";
 $(function () {
     var h = document.documentElement.clientHeight;
     $("#chart-container").css("height", h - 150 + "px");
 
-    token = getToken();
+    loadUserData();
     /**
      * Check this page's permission and load navbar
      */
-    if (!getPermissionOfPage("Member_Setting")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    checkPermissionOfPage("Member_Setting");
     setNavBar("Member_Setting", "Dept_Setting");
 
     var size = 10;

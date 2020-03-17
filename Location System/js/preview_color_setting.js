@@ -1,4 +1,3 @@
-var token = "";
 var default_color = '#2eb82e';
 var default_size = 10;
 
@@ -7,11 +6,8 @@ $(function () {
     $(".container").css("height", h - 10 + "px");
     
     //Check this page's permission and load navbar
-    token = getToken();
-    if (!getPermissionOfPage("Member_Setting")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    loadUserData();
+    checkPermissionOfPage("Member_Setting");
     setNavBar("Member_Setting", "Preview_Color_Setting");
 
     $("#display_type_select").change(function () {

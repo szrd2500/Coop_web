@@ -8,16 +8,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="../image/logo/favicon.ico" type="image/x-icon" />
     <!--JQuery庫-->
-    <link rel="stylesheet" type="text/css" href="../css/import/jquery-ui-1.12.1.min.css" />
-    <script type="text/javascript" src="../js/import/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!--BootStrap3-->
-    <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.3.7.min.css" />
-    <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="../js/import/bootstrap-3.3.7.min.js"></script>
-    <!--Add icon library-->
-    <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--<script type="text/javascript" src="../js/import/bootstrap.min.js"></script>-->
+    <!-- Add icon library -->
+    <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css'
+        integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
     <!--Edit css-->
-    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/style.css" />
     <style>
         h4 {
             font-family: 'Microsoft JhengHei', 'sans-serif';
@@ -36,6 +38,9 @@
             height: 240px;
             background: lightgray;
             border-radius: 2px;
+            /*box-shadow: inset 3px 3px 12px gray;
+            padding: 3px;
+            box-shadow: 2px 2px 3px #021835;*/
             box-shadow: 0px 0px 4px 2px rgb(41, 41, 41) inset;
             padding: 5px;
         }
@@ -49,11 +54,11 @@
             margin: 5px 10px;
         }
     </style>
-    <!--Cookie-->
-    <script type="text/javascript" src="../js/import/js.cookie.min.js"></script>
     <!--Edit js-->
-    <script type="text/javascript" src="../js/general_functions.js"></script>
-    <script type="text/javascript" src="../js/login_security.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>-->
+    <script src="../js/import/js.cookie.min.js"></script>
+    <script src="../js/general_functions.js"></script>
+    <script src="../js/login_security.js"></script>
 </head>
 
 <body>
@@ -62,7 +67,7 @@
         <div class="row">
             <div class="col-lg-12 top_nav">
                 <img class="logo" src="../image/logo/yihong_logo.png">
-                <label id="login_user"></label>
+                <label id="login_user" v-html="getUser()"></label>
             </div>
             <div class="tool-bar">
                 <label class="i18n" name="i_language"></label>
@@ -105,8 +110,11 @@
         </div>
     </div>
     <!-- i18n 多語言翻譯 -->
-    <script type="text/javascript" src="../js/i18n/jquery.i18n.properties.js"></script>
-    <script type="text/javascript" src="../js/i18n/language.js"></script>
+    <script src="../js/i18n/jquery.i18n.properties.js"></script>
+    <script src="../js/i18n/language.js"></script>
+    <!-- Vue.js -->
+    <!--<script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
+    <script src="../js/import/vue.js"></script>
 </body>
 
 </html>

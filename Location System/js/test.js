@@ -160,3 +160,94 @@ function drawTags(id, x, y, color, size, zoom) {
     ctx.fillStyle = '#ffffff';
     ctx.fill();
 }
+
+
+
+
+var childPages = {
+    alarmlist: {
+        isActive: false,
+        class: "alarmlist",
+        href: "javascript: alarmSidebarMove();",
+        icon: "fas fa-exclamation-circle",
+        text: 'i_alarmList'
+    },
+    taglist: {
+        isActive: false,
+        class: "taglist",
+        href: "javascript: tagSidebarMove();",
+        icon: "fas fa-map-marker-alt",
+        text: 'i_tagList'
+    },
+    Member_Setting: {
+        isActive: false,
+        class: "setting-type",
+        href: "../Member_Setting.html",
+        icon: "fas fa-users",
+        text: 'i_memberSetting'
+    },
+    Dept_Setting: {
+        isActive: false,
+        class: "setting-type",
+        href: "../Dept_Setting.html",
+        icon: "fas fa-sitemap",
+        text: 'i_deptSetting'
+    },
+    Job_Title_Setting: {
+        isActive: false,
+        class: "setting-type",
+        href: "../Job_Title_Setting.html",
+        icon: "fas fa-id-card",
+        text: 'i_titleSetting'
+    },
+    User_Type_Setting: {
+        isActive: false,
+        class: "setting-type",
+        href: "../User_Type_Setting.html",
+        icon: "fas fa-user-tag",
+        text: 'i_usertypeSetting'
+    },
+    Preview_Color_Setting: {
+        isActive: false,
+        class: "setting-type",
+        href: "../Preview_Color_Setting.html",
+        icon: "fas fa-map-marker-alt",
+        text: 'i_previewColorSetting'
+    },
+    Reference: {
+        isActive: false,
+        class: "setting-type",
+        href: "../Reference.html",
+        icon: "fas fa-satellite-dish",
+        text: 'i_reference'
+    },
+    Advance_cmd: {
+        isActive: false,
+        class: "setting-type",
+        href: "../Advance_cmd.html",
+        icon: "fas fa-code",
+        text: 'i_advance_cmd'
+    },
+    Update: {
+        isActive: false,
+        class: "setting-type",
+        href: "../Update.html",
+        icon: "fas fa-download",
+        text: 'i_update'
+    },
+    start: {
+        isActive: false,
+        class: "start",
+        href: "javascript: StartClick();",
+        icon: this.isActive ? "fas fa-pause" : "fas fa-play",
+        text: this.isActive ? 'i_stopPositioning' : 'i_startPositioning'
+    },
+    lock: {
+        isActive: false,
+        class: "lock",
+        href: "javascript: lockLeftMemu();",
+        icon: this.isActive ? "fas fa-lock" : "fas fa-lock-open",
+        text: this.isActive ? 'i_lock' : 'i_unlock'
+    },
+
+}

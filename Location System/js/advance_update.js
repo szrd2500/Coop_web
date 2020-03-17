@@ -1,6 +1,4 @@
-'use strict';
-var token = "",
-    fileData = "",
+var fileData = "",
     fileName = "",
     fileArray = [],
     st = 0,
@@ -11,14 +9,11 @@ $(function () {
     var h = document.documentElement.clientHeight;
     $("#block_files_list").css("max-height", h - 432 + "px");
 
-    token = getToken();
+    loadUserData();
     /*
      * Check this page's permission and load navbar
      */
-    if (!getPermissionOfPage("Reference")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    checkPermissionOfPage("Reference");
     setNavBar("Reference", "Update");
 
     $("#btn_upload").click(function () {

@@ -1,6 +1,4 @@
-var token = "",
-    permission = "0",
-    default_color = '#2eb82e',
+var default_color = '#2eb82e',
     memberArray = [],
     deptColorArray = [],
     titleColorArray = [],
@@ -15,12 +13,8 @@ var token = "",
 
 $(function () {
     //Check this page's permission and load navbar
-    token = getToken();
-    permission = getUser() ? parseInt(getUser().userType, 10) : 0;
-    if (!getPermissionOfPage("Member_Setting")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    loadUserData();
+    checkPermissionOfPage("Member_Setting");
     setNavBar("Member_Setting", "Member_Setting");
 
     var h = document.documentElement.clientHeight;

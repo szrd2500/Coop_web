@@ -1,4 +1,3 @@
-var token = "";
 var mapArray = [];
 var thumb_width = 240;
 var thumb_height = 180;
@@ -8,11 +7,8 @@ $(function () {
     /*$(".container").css("height", h - 10 + "px");*/
     $("#cvsBlock").css("height", h - 375 + "px");
     //Check this page's permission and load navbar
-    token = getToken();
-    if (!getPermissionOfPage("Map_Setting")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    loadUserData();
+    checkPermissionOfPage("Map_Setting");
     setNavBar("Map_Setting", "");
     thumb_width = parseInt(document.getElementById("new_map_block").style.maxWidth, 10);
     thumb_height = parseInt(document.getElementById("new_map_block").style.maxHeight, 10);

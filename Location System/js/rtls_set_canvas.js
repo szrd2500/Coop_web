@@ -349,7 +349,7 @@ function RTLS_Canvas(number) {
             for (var tag_id in AlarmList) {
                 var v = AlarmList[tag_id];
                 if (groupfindMap[v.point[i].group_id] == Map_id)
-                    drawAlarmTags(ctx, v.id, v.point[i].x, canvasImg.height - v.point[i].y, v.status, dot_size.alarm, 1 / Zoom);
+                    drawAlarmTags(ctx, v.id, v.point[i].x, canvasImg.height - v.point[i].y, v.alarm_type, dot_size.alarm, 1 / Zoom);
             }
             //Focus the position of this locating tag.
             if (isFocus && locating_id in TagList) {
@@ -531,7 +531,7 @@ function RTLS_Canvas(number) {
 
     this.draw = draw; //讓外部也可以使用此物件內的繪製方法
 
-    this.getNowMap = function () { //從外部取得此物件的當前地圖ID
+    this.Map_id = function () { //從外部取得此物件的當前地圖ID
         return Map_id;
     };
 

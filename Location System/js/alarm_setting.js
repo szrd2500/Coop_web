@@ -23,8 +23,7 @@ var TimeGroupArr = [],
         time_slot: "",
         fence: "",
         fence_alarm_group: ""
-    },
-    token = "";
+    };
 
 $(function () {
     var h = document.documentElement.clientHeight;
@@ -38,11 +37,8 @@ $(function () {
     /**
      * Check this page's permission and load navbar
      */
-    token = getToken();
-    if (!getPermissionOfPage("Alarm_Setting")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    loadUserData();
+    checkPermissionOfPage("Alarm_Setting");
     setNavBar("Alarm_Setting", "");
 
     $('.timepicker').bootstrapMaterialDatePicker({

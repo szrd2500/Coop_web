@@ -1,7 +1,3 @@
-.container {
-    min-width: 530px;
-}
-
 tr.checked td {
     background: #aaddff !important;
 }
@@ -12,36 +8,23 @@ tbody tr {
 
 th,
 td {
-    font-family: 'Microsoft JhengHei', 'sans-serif';
     padding: 8px;
     text-align: left;
 }
-
-.nav-tabs {
-    margin-top: 10px;
-}
-
 
 h4 {
     color: white;
 }
 
-#reference_block {
-    height: 640px;
-    max-height: 640px;
-    overflow: auto;
-    margin: 10px 0px;
-}
-
-#command_block {
-    max-height: 685px;
+.table_block {
+    max-height: 690px;
     overflow: auto;
     margin: 10px 0px;
 }
 
 .table-line th {
-    border: 1px solid rgb(117, 117, 117);
-    background: rgb(167, 167, 167);
+    border: 1px solid rgb(189, 189, 189);
+    background: rgb(125, 125, 125);
     color: white;
     text-align: center;
 }
@@ -133,22 +116,6 @@ input[type="file"] {
     margin-right: 20px;
 }
 
-.label-download {
-    color: rgb(0, 130, 175);
-}
-
-.label-upload {
-    color: rgb(0, 187, 11);
-}
-
-.label-view {
-    color: rgb(19, 76, 197);
-}
-
-.label-openfile {
-    color: rgb(19, 197, 182);
-}
-
 .btn-label {
     cursor: pointer;
     background: transparent;
@@ -178,61 +145,32 @@ input[type="file"] {
     /*min-width: 570px;*/
 }
 
-.backup-btns button {
-    margin: 10px 20px 0px 10px;
-}
-
-.title-shadow {
-    margin-left: 10px;
-    color: white;
-    text-shadow: 2px 2px 4px #000000;
-}
-
-.db-filelist-bar {
-    height: auto;
-    margin: 0px 10px;
-    border: 2px solid lightgray;
-    background: lightgray;
-    color: black;
-    padding: 5px 10px;
-}
-
-.db-filelist-bar input[type='text'] {
-    padding-left: 5px;
-}
-
-#filedata_name {
-    font-weight: bold;
-    color: black;
-    text-shadow: 1px 1px 4px #2731d0;
-    text-align: center;
-}
-
-#database_files_list {
-    margin: 0px 10px;
-    border: 2px solid lightgray;
-    background: white;
-    min-height: 490px;
-    color: black;
-    overflow: auto;
-}
-
 #block_files_list {
     margin: 0px 10px;
     border: 2px solid lightgray;
     background: white;
-    min-height: 320px;
+    height: 350px;
+    /*min-width: 570px;*/
     color: black;
-    overflow: auto;
+}
+
+#block_files_list label {
+    color: black;
 }
 
 .file-img-name {
-    margin: 7px;
-    padding: 5px;
-    width: 150px;
     position: relative;
     display: inline-block;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    margin: 8px;
     background: transparent;
+}
+
+.onselected {
+    border-radius: 4px;
+    background: rgb(208, 230, 236);
 }
 
 .file-img-name img {
@@ -241,28 +179,14 @@ input[type="file"] {
     margin-bottom: 5px;
 }
 
-.file-img-name input {
-    color: black;
-    cursor: pointer;
-    text-align: left;
-    width: 100px;
-}
-
 .file-img-name label {
-    color: black;
+    margin: auto;
     cursor: pointer;
-    text-align: left;
-    word-break: break-all;
-    white-space: pre-wrap;
-    padding: 0px 3px;
     border: 1px solid lightgray;
+    padding: 0px 5px;
+    width: auto;
+    height: auto;
 }
-
-.onselected {
-    border-radius: 4px;
-    background: rgb(208, 230, 236);
-}
-
 
 .cmd-send-bar td {
     padding: 15px 5px;
@@ -285,80 +209,4 @@ input[type="file"] {
 
 .menu-left ul .start:hover a {
     background: rgb(4, 143, 124)
-}
-
-.dialog_progress {
-    top: 10px;
-    left: 45%;
-    position: absolute;
-    margin: auto;
-    width: auto;
-    height: auto;
-    display: none;
-    padding: 8px 12px;
-    -moz-box-shadow: 4px 4px 12px -2px rgb(97, 96, 96);
-    -webkit-box-shadow: 4px 4px 12px -2px rgb(97, 96, 96);
-    box-shadow: 4px 4px 12px -2px rgb(97, 96, 96);
-    border-radius: 5px;
-    background: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
-}
-
-
-/* Slider setting */
-.slider {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 15px;
-    border-radius: 5px;
-    background: #d3d3d3;
-    outline: none;
-    opacity: 0.7;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
-}
-
-.slider:hover {
-    opacity: 1;
-}
-
-.slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    border: 1px solid white;
-    background: rgb(0, 195, 255);
-    cursor: pointer;
-}
-
-.slider::-moz-range-thumb {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    border: 1px solid white;
-    background: rgb(0, 195, 255);
-    cursor: pointer;
-}
-
-.slider-text {
-    background-color: transparent;
-    color: rgb(0, 74, 160);
-    font-weight: bold;
-    font-size: 20px;
-    padding: 2px 8px;
-    margin-left: 5px;
-    border-radius: 5px;
-    box-shadow: 1px 1px 3px 1px rgb(115, 111, 111) inset;
-}
-
-.slider-block {
-    margin: 20px;
-    height: 575px;
-}
-
-.slider-block span {
-    font-size: 20px;
-    color: rgb(43, 43, 43);
 }

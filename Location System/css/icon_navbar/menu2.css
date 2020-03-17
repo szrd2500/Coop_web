@@ -53,3 +53,12 @@ body,html{font-weight: bold;font-family: 'Microsoft JhengHei', 'sans-serif';}
 .menu .locked:hover{width: 50px}
 .menu .locked:hover .sidebar ul li a{padding: 7px 13px}
 .menu .locked:hover .sidebar ul li a span{margin-left: 15px}
+
+
+/* adjust icon */
+.menu .fa-map-marker-alt{padding-left:2px}
+.menu .fa-bell{padding-left:2px}
+.menu .fa-file-alt{padding-left:3px}
+.menu .fa-map-marker-alt{padding-left:2px}
+.menu .fa-play{padding-left:2px}
+.menu .fa-pause{padding-left:2px}

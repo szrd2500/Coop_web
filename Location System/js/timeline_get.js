@@ -2,8 +2,7 @@ var noImagePng = "../image/no_image.png",
     locateColor = "#9c00f7",
     groupColor = "#ff9933";
 
-var token = "",
-    PIXEL_RATIO, // 獲取瀏覽器像素比
+var PIXEL_RATIO, // 獲取瀏覽器像素比
     chkUseInputMap, cvsBlock, canvas, ctx,
     canvasImg = {
         isPutImg: false,
@@ -42,17 +41,16 @@ var token = "",
         canvasTop: 0
     };
 
+var alarmListVue = null;
+
 
 $(function () {
     var h = document.documentElement.clientHeight;
     //$(".container").css("height", h - 10 + "px");
     $("#cvsBlock").css("height", h - 102 + "px");
     //Check this page's permission and load navbar
-    token = getToken();
-    if (!getPermissionOfPage("Timeline")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    loadUserData();
+    checkPermissionOfPage("Timeline");
     setNavBar("Timeline", "");
 
     $('.timepicker').bootstrapMaterialDatePicker({
@@ -214,7 +212,20 @@ $(function () {
     });
 
     setup();
+    setVueFunc();
 });
+
+function setVueFunc() {
+    alarmListVue = new Vue({
+        el: '#alarm_table',
+        data: {
+            items: []
+        },
+        methods: {
+            locate: displayAlarmPos
+        }
+    });
+}
 
 function setup() {
     chkUseInputMap = document.getElementById("chk_use_input_map");
@@ -238,11 +249,7 @@ function setup() {
     });
     setMobileEvents();
     getMemberNumber();
-    /**
-     * 接收並載入Server的地圖資訊
-     * 取出物件所有屬性的方法，參考網址: 
-     * https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
-     */
+    //get MapList => 
     var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
@@ -773,43 +780,36 @@ function getTimelineByGroup(group_id) {
     return func.getMapGroup();
 }
 
+
 function updateAlarmTable() {
-    var count = 0;
-    $("#alarm_table tbody").empty();
+    var items = [];
     switch (HistoryData["search_type"]) {
         case "Tag":
             for (var tag_id in AlarmList) {
                 for (var time in AlarmList[tag_id]) {
-                    count++;
-                    $("#alarm_table tbody").append("<tr><td>" + count + "</td>" +
-                        "<td>" + AlarmList[tag_id][time].alarm_type + "</td>" +
-                        "<td>" + parseInt(tag_id, 16) + "</td>" +
-                        "<td>" + time + "</td>" +
-                        "<td><button class=\"btn btn-default btn-focus\"" +
-                        " onclick=\"displayAlarmPos(\'" + tag_id + "\',\'" + time + "\')\">" +
-                        "<img class=\"icon-image\" src=\"../image/target.png\"></button>" +
-                        "</td></tr>");
+                    items.push({
+                        status: AlarmList[tag_id][time].alarm_type,
+                        tagId: tag_id,
+                        time: time
+                    });
                 }
             }
             break;
         case "Group":
             for (var time in AlarmList) {
                 for (var tag_id in AlarmList[time]) {
-                    count++;
-                    $("#alarm_table tbody").append("<tr><td>" + count + "</td>" +
-                        "<td>" + AlarmList[time][tag_id].alarm_type + "</td>" +
-                        "<td>" + parseInt(tag_id, 16) + "</td>" +
-                        "<td>" + time + "</td>" +
-                        "<td><button class=\"btn btn-default btn-focus\"" +
-                        " onclick=\"displayAlarmPos(\'" + time + "\',\'" + tag_id + "\')\">" +
-                        "<img class=\"icon-image\" src=\"../image/target.png\"></button>" +
-                        "</td></tr>");
+                    items.push({
+                        status: AlarmList[time][tag_id].alarm_type,
+                        tagId: tag_id,
+                        time: time
+                    });
                 }
             }
             break;
         default:
             break;
     }
+    alarmListVue.items = items;
 }
 
 function getAlarmHandleByTime() {

@@ -1,4 +1,3 @@
-var token = "";
 var CommandName_account = "";
 var userArray = [];
 
@@ -6,58 +5,13 @@ $(function () {
     var h = document.documentElement.clientHeight;
     $(".container").css("height", h - 10 + "px");
 
-    token = getToken();
-    if (!getPermissionOfPage("Account_Management")) {
-        alert("Permission denied!");
-        history.back();
-    }
+    loadUserData();
+    checkPermissionOfPage("Account_Management");
     setNavBar("", "");
     inputUsersTable();
     inputPermissionTable();
     $("#btn_account_add").on('click', newAccountInfo);
     $("#btn_account_delete").on('click', deleteAccountInfo);
-
-    //Dialog to edit the permission.
-    /*
-    $("input[name='chkbox_permission']").on('change', changeCheck)
-
-    $("#table_permission tr").on('click', showDialog_permission);
-
-    resetPermissionTable();
-    
-    var dialog, form,
-        permission_name = $("#permission_name"),
-        allFields = $([]).add(permission_name);
-    var SendResult = function () {
-        allFields.removeClass("ui-state-error");
-        var valid = true && checkLength(permission_name, $.i18n.prop('i_alertError_10'), 1, 20);
-        if (valid) {
-            dialog.dialog("close");
-        }
-        return valid;
-    };
-    dialog = $("#dialog_permission_setting").dialog({
-        autoOpen: false,
-        height: 600,
-        width: 600,
-        modal: true,
-        buttons: {
-            "Confirm": SendResult,
-            Cancel: function () {
-                form[0].reset();
-                allFields.removeClass("ui-state-error");
-                dialog.dialog("close");
-            }
-        },
-        close: function () {
-            form[0].reset();
-            allFields.removeClass("ui-state-error");
-        }
-    });
-    form = dialog.find("form").on("submit", function (event) {
-        event.preventDefault();
-        SendResult();
-    });*/
 
     //Dialog to edit the account.
     var dialog2, form2,
@@ -181,12 +135,6 @@ function inputUsersTable() {
     xmlHttp.send(JSON.stringify(request));
 }
 
-/*function showDialog_permission() {
-    var permission = this.cells[0].childNodes[0].textContent;
-    document.getElementById("permission_name").value = permission;
-    $("#dialog_permission_setting").dialog("open");
-}*/
-
 function editAccountInfo() {
     CommandName_account = "EditAccount_Info";
     var id = this.cells[0].childNodes[0].value;
@@ -248,31 +196,3 @@ function deleteAccountInfo() {
         alert($.i18n.prop('i_permissionAlert_2'));
     }
 }
-
-
-/*function changeCheck() {
-    var radio = document.getElementsByName(this.value);
-    if (this.checked) {
-        radio.forEach(function(element) {
-            element.disabled = false;
-        });
-        radio[0].checked = true;
-    } else {
-        radio.forEach(function(element) {
-            element.disabled = true;
-            element.checked = false;
-        });
-    }
-}
-
-function resetPermissionTable() {
-    var checkBoxs = document.getElementsByName("chkbox_permission");
-    for (var i = 0; i < checkBoxs.length; i++) {
-        var radio = document.getElementsByName(checkBoxs[i].value);
-        checkBoxs[i].checked = false;
-        radio.forEach(function(element) {
-            element.disabled = true;
-            element.checked = false;
-        });
-    }
-}*/

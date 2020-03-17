@@ -1,7 +1,5 @@
-var token = "";
-
 $(function () {
-    token = getToken();
+    loadUserData();
 
     var dialog, form,
         sel_item = $("#multi_edit_item"),

@@ -1,9 +1,8 @@
-var token = "";
 var default_color = '#2eb82e';
 var delete_job_number = "";
 
 $(function () {
-    token = getToken();
+    loadUserData();
 
     var dialog, form,
         main_tid_id = $("#main_tid_id"),

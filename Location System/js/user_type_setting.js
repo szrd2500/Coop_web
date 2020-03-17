@@ -1,5 +1,4 @@
-var token = "",
-    size = 10,
+var size = 10,
     default_color = '#2eb82e',
     change = "",
     usertypeNameArray = [];
@@ -9,11 +8,8 @@ $(function () {
     $(".container").css("height", h - 10 + "px");
 
     //Check this page's permission and load navbar
-    token = getToken();
-    if (!getPermissionOfPage("Member_Setting")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    loadUserData();
+    checkPermissionOfPage("Member_Setting");
     setNavBar("Member_Setting", "User_Type_Setting");
 
     $("#set_dot_color").change(function () { //設定change事件

@@ -7,15 +7,16 @@
     <meta id="i18n_pagename" content="common">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="../image/logo/favicon.ico" type="image/x-icon" />
-    <!--JQuery庫-->
-    <link rel="stylesheet" type="text/css" href="../css/import/jquery-ui-1.12.1.min.css" />
-    <script type="text/javascript" src="../js/import/jquery-3.3.1.min.js"></script>
     <!--BootStrap3-->
-    <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.3.7.min.css" />
-    <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="../js/import/bootstrap-3.3.7.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--JQuery庫-->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- Add icon library -->
-    <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <!-- Icon Navbar-->
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/animate.min.css" />
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
@@ -24,13 +25,14 @@
     <link rel="stylesheet" type="text/css" href="../css/login_user.css" />
     <link rel="stylesheet" type="text/css" href="../css/report_setting.css" />
     <!-- Excel -->
+    <!--<script type="text/javascript" src="../js/xlsx/xlsx.full.min.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.core.min.js"></script>
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.full.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.full.min.js"></script>
     <script type="text/javascript" src="../js/excel_export.js"></script>
     <!--編寫js-->
     <script type="text/javascript" src="../js/general_functions.js"></script>
     <script type="text/javascript" src="../js/check_permission.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript" src="../js/report.js"></script>
     <!--JQuery UI - Dialog-->
     <script type="text/javascript" src="../js/Dialog/dialog_report_member.js"></script>
@@ -39,13 +41,41 @@
 <body>
     <div class="container">
         <!--icon navbar-->
-        <div id="icon_navbar"></div>
+        <div id="icon_navbar">
+            <aside class="menu">
+                <div v-bind:class="['menu-left', lock_state == 'unlocked' ? '' : 'locked']">
+                    <nav class="sidebar">
+                        <ul class="nav">
+                            <li v-for="(page, pageName) in parentPages" v-bind:class="{ 'active' : page.isActive }">
+                                <a v-bind:href="page.isActive ? '#' : page.href">
+                                    <i v-bind:class="page.icon"></i><span>{{ i18n(page.text) }}</span>
+                                </a>
+                            </li>
+                            <hr>
+                            <li v-for="(page, pageName) in childPages"
+                                v-bind:class="[page.class, { 'active' : page.isActive }]">
+                                <a v-bind:href="page.href"><i v-bind:class="page.icon" name="child_icon"></i>
+                                    <span>{{ i18n(page.text) }}</span>
+                                </a>
+                            </li>
+                            <hr>
+                            <li class="lock">
+                                <a href="javascript: sidebarVue.lock();">
+                                    <i v-bind:class="['fas', lock_state == 'unlocked' ? 'fa-lock-open' : 'fa-lock']">
+                                    </i><span>{{ lock_state == 'unlocked' ? i18n('i_unlock') : i18n('i_lock') }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </aside>
+        </div>
 
         <!-- Web Content -->
-        <div class="row">
+        <div class=" row">
             <div class="col-lg-12 top_nav">
                 <img class="logo" src="../image/logo/yihong_logo.png">
-                <label id="login_user"></label>
+                <label id="login_user" v-html="getUser()"></label>
             </div>
             <div class="tool-bar">
                 <label class="i18n" name="i_language"></label>
@@ -116,23 +146,18 @@
                 <div id="report_pages_control">
                     <button class="btn btn-primary" id="btn_top"><i class='fas fa-angle-double-left'></i></button>
                     <button class="btn btn-primary" id="btn_backword"><i class='fas fa-angle-left'></i></button>
-                    <input type="text" id="current_pages" value="1" style="width: auto; max-width: 30px; " /> / <label
-                        id="total_pages">1</label>
+                    <input type="text" id="current_pages" value="1" style="width: auto; max-width: 30px; " /> /
+                    <label id="total_pages">1</label>
                     <button class="btn btn-primary" id="btn_forword"><i class='fas fa-angle-right'></i></button>
                     <button class="btn btn-primary" id="btn_bottom"><i class='fas fa-angle-double-right'></i></button>
                 </div>
 
                 <div class="report-page" id="report_page_timeline">
-                    <table>
-                        <tr>
-                            <td><label>日期 : <span id="report_date"></span></label></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h3 style="margin: auto;">個人一日軌跡</h3>
-                            </td>
-                        </tr>
-                    </table>
+                    <label style="float: left;">
+                        <span class="i18n" name="i_date"></span> : <span id="report_date"></span>
+                    </label>
+                    <br><br>
+                    <h3 style="margin: auto;">個人一日軌跡</h3>
                     <br>
                     <table class="table-line info-table" id="report_person_timeline">
                         <tr>
@@ -151,25 +176,28 @@
                         <table class="table-line" id="table_person_timeline">
                             <thead>
                                 <tr>
-                                    <th>項目</th>
-                                    <th>時間</th>
-                                    <th>地點</th>
+                                    <th class="i18n" name="i_item"></th>
+                                    <th class="i18n" name="i_time"></th class="i18n" name="">
+                                    <th class="i18n" name="i_position"></th class="i18n" name="">
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                                <tr v-for="value in records">
+                                    <td>{{ value.item }}</td>
+                                    <td>{{ value.time }}</td>
+                                    <td>{{ value.position }}</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
 
                 <div class="report-page" id="report_page_member" style="display: none;">
-                    <label>日期 : <span id="report_attend_date"></span></label>
-                    <table>
-                        <tr>
-                            <td>
-                                <h3 id="report_attend_title" style="margin: auto;">人員出勤表</h3>
-                            </td>
-                        </tr>
-                    </table>
+                    <label style="float: left;">
+                        <span class="i18n" name="i_date"></span> : <span id="report_attend_date"></span>
+                    </label>
+                    <br><br>
+                    <h3 id="report_attend_title" style="margin: auto;">人員出勤表</h3>
                     <br>
                     <div style="overflow: auto; max-height: 1200px;">
                         <table class="table-line" id="table_member_attendance">
@@ -184,7 +212,14 @@
                                     <th class="i18n" name="i_clockOut"></th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                                <tr v-for="(value, index) in records">
+                                    <td>{{ index + 1 }}</td>
+                                    <td v-for="title in titles">{{ members[value.number][title] }}</td>
+                                    <td>{{ value.clockIn }}</td>
+                                    <td>{{ value.clockOut }}</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -204,14 +239,14 @@
             <label>輸入搜尋條件</label> : <br>
             <table class="table-noborder">
                 <tr>
-                    <td>部門 : <select id="search_dept">
+                    <td><label class="i18n" name="i_dept"></label> : <select id="search_dept">
                             <option value="">All</option>
                         </select></td>
-                    <td>工號 : <input type="text" id="search_number" /></td>
+                    <td><label class="i18n" name="i_number"></label> : <input type="text" id="search_number" /></td>
                 </tr>
                 <tr>
-                    <td>標籤編號 : <input type="text" id="search_tag_id" /></td>
-                    <td>姓名 : <input type="text" id="search_name" /></td>
+                    <td><label class="i18n" name="i_userID"></label> : <input type="text" id="search_tag_id" /></td>
+                    <td><label class="i18n" name="i_name"></label> : <input type="text" id="search_name" /></td>
                 </tr>
             </table>
             <span style="float: right;">
@@ -228,11 +263,12 @@
                 <table id="search_member_list" class="table-line">
                     <thead>
                         <tr>
-                            <th><input type="checkbox" id="chk_all_search_member" /> 項目</th>
-                            <th>工號</th>
-                            <th>標籤編號</th>
-                            <th>姓名</th>
-                            <th>部門</th>
+                            <th><input type="checkbox" id="chk_all_search_member" /> <label class="i18n"
+                                    name="i_item"></label></th>
+                            <th><label class="i18n" name="i_number"></label></th>
+                            <th><label class="i18n" name="i_userID"></label></th>
+                            <th><label class="i18n" name="i_name"></label></th>
+                            <th><label class="i18n" name="i_dept"></label></th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -258,9 +294,11 @@
             </div>
         </div>
     </div>
-    <!-- i18n 多語言翻譯 -->
+    <!-- i18n -->
     <script type="text/javascript" src="../js/i18n/jquery.i18n.properties.js"></script>
     <script type="text/javascript" src="../js/i18n/language.js"></script>
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </body>
 
 </html>

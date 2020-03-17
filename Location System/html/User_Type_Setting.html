@@ -7,15 +7,16 @@
     <meta id="i18n_pagename" content="common">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="../image/logo/favicon.ico" type="image/x-icon" />
-    <!--Jquery-->
-    <link rel="stylesheet" type="text/css" href="../css/import/jquery-ui-1.12.1.min.css" />
-    <script type="text/javascript" src="../js/import/jquery-3.3.1.min.js"></script>
-    <!--BootStrap3-->
-    <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.4.0.css" />
-    <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="../js/import/bootstrap-3.4.0.min.js"></script>
-    <!--Add icon library-->
-    <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
+    <!-- JQuery -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+    <!-- BootStrap3 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <!-- Icon Navbar -->
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/animate.min.css" />
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
@@ -27,19 +28,47 @@
     <script type="text/javascript" src="../js/general_functions.js"></script>
     <script type="text/javascript" src="../js/check_permission.js"></script>
     <script type="text/javascript" src="../js/user_type_setting.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 
 <body>
     <div class="container">
         <!-- icon navbar -->
-        <div id="icon_navbar"></div>
+        <div id="icon_navbar">
+            <aside class="menu">
+                <div v-bind:class="['menu-left', lock_state == 'unlocked' ? '' : 'locked']">
+                    <nav class="sidebar">
+                        <ul class="nav">
+                            <li v-for="(page, pageName) in parentPages" v-bind:class="{ 'active' : page.isActive }">
+                                <a v-bind:href="page.isActive ? '#' : page.href">
+                                    <i v-bind:class="page.icon"></i><span>{{ i18n(page.text) }}</span>
+                                </a>
+                            </li>
+                            <hr>
+                            <li v-for="(page, pageName) in childPages"
+                                v-bind:class="[page.class, { 'active' : page.isActive }]">
+                                <a v-bind:href="page.href"><i v-bind:class="page.icon" name="child_icon"></i>
+                                    <span>{{ i18n(page.text) }}</span>
+                                </a>
+                            </li>
+                            <hr>
+                            <li class="lock">
+                                <a href="javascript: sidebarVue.lock();">
+                                    <i v-bind:class="['fas', lock_state == 'unlocked' ? 'fa-lock-open' : 'fa-lock']">
+                                    </i><span>{{ lock_state == 'unlocked' ? i18n('i_unlock') : i18n('i_lock') }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </aside>
+        </div>
 
         <!-- Web content -->
         <div class="row">
             <div class="col-lg-12 top_nav">
                 <img class="logo" src="../image/logo/yihong_logo.png">
-                <label id="login_user"></label>
+                <label id="login_user" v-html="getUser()"></label>
             </div>
             <div style="float:right;">
                 <label class="i18n" name="i_language"></label>
@@ -103,6 +132,8 @@
     <!-- i18n 多語言翻譯 -->
     <script type="text/javascript" src="../js/i18n/jquery.i18n.properties.js"></script>
     <script type="text/javascript" src="../js/i18n/language.js"></script>
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </body>
 
 </html>

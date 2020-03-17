@@ -1,5 +1,3 @@
-var isStart = false;
-
 function searchNetworkCards() {
     var xmlHttp = createJsonXmlHttp("Command");
     xmlHttp.onreadystatechange = function () {
@@ -77,59 +75,24 @@ function searchDevices() {
 }
 
 function StartClick() {
-    if (!isStart) {
-        isStart = true;
-        sendLaunchCmd("Start");
-        document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-pause\">" +
-            "</i><span>" + $.i18n.prop('i_stopPositioning') + "</span>";
+    var requestArray = {
+        "Command_Type": ["Write"],
+        "Command_Name": ["Launch"],
+        "api_token": [token]
+    };
+    if (!PageSettings.FirstFloor["Reference"].SecondFloor["start"].isStart) {
+        requestArray.Value = "Start";
+        sidebarVue.launch(true);
     } else {
-        isStart = false;
-        sendLaunchCmd("Stop");
-        document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-play\">" +
-            "</i><span>" + $.i18n.prop('i_startPositioning') + "</span>";
+        requestArray.Value = "Stop";
+        sidebarVue.launch(false);
     }
-
-}
-
-function sendLaunchCmd(switch_type) {
-    var requestArray = {
-        "Command_Type": ["Write"],
-        "Command_Name": ["Launch"],
-        "Value": switch_type,
-        "api_token": [token]
-    };
     var xmlHttp = createJsonXmlHttp("test2");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-            if (checkTokenAlive(token, JSON.parse(this.responseText)))
-                return true;
-            else
-                return false;
+            var revObj = JSON.parse(this.responseText),
+                pass = checkTokenAlive(token, revObj);
         }
     };
     xmlHttp.send(JSON.stringify(requestArray));
-}
-
-function restartLaunch() {
-    isStart = false;
-    var requestArray = {
-        "Command_Type": ["Write"],
-        "Command_Name": ["Launch"],
-        "Value": "Stop",
-        "api_token": [token]
-    };
-    var xmlHttp = createJsonXmlHttp("test2");
-    xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-            if (checkTokenAlive(token, JSON.parse(this.responseText))) {
-                isStart = true;
-                sendLaunchCmd("Start");
-                document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-pause\">" +
-                    "</i><span>" + $.i18n.prop('i_stopPositioning') + "</span>";
-            }
-        }
-    };
-    xmlHttp.send(JSON.stringify(requestArray));
-    document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-play\">" +
-        "</i><span>" + $.i18n.prop('i_startPositioning') + "</span>";
 }

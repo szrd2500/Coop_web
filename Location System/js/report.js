@@ -1,6 +1,5 @@
 'use strict';
-var token = "",
-    mapList = {},
+var mapList = {},
     memberList = {},
     timeDelay = {},
     selectNumberArray = [],
@@ -9,15 +8,14 @@ var token = "",
     historyData = [];
 
 
+
+
 $(function () {
-    token = getToken();
+    loadUserData();
     /*
      * Check this page's permission and load navbar
      */
-    if (!getPermissionOfPage("Report")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    checkPermissionOfPage("Report");
     setNavBar("Report", "");
 
     getMap();
@@ -132,11 +130,12 @@ $(function () {
 
     $("#btn_export_excel").click(function () {
         switch ($("#select_report_name").val()) {
-            case "person_timeline":
+            case "person_timeline": //個人一日軌跡
                 var name = "person_timeline";
                 var array = convertTableToArray("table_person_timeline");
                 if (array.length == 0)
                     return alert($.i18n.prop('i_reportAlarm_1'));
+                //導出所有一日軌跡到同一頁工作表中(超過10000筆會失敗，所以只會導出10000筆記錄)
                 var arr = array.slice(0, 10000);
                 //arraysToExcel.timeline(arr, "個人一日軌跡.xls", "Excel");
                 $("#dvjson").excelexportjs({
@@ -148,10 +147,10 @@ $(function () {
                     worksheetName: name
                 });
                 break;
-            case "member_attendance":
-            case "all_member_attend":
+            case "member_attendance": //人員出勤表
+            case "all_member_attend": //全部人員出勤表
                 if (historyData.length > 0) {
-                    //
+                    //依照日期，將一日的出勤記錄放到同一頁工作表中(例如一週就會有7頁工作表)
                     arraysToExcel.attendance(historyData, dateArray, "人員出勤表.xls", "Excel");
                 } else {
                     alert($.i18n.prop('i_reportAlarm_1'));
@@ -178,7 +177,41 @@ $(function () {
     $("#current_pages").on("change", function () {
         changePage.select($(this).val());
     });
+
+    setVueFunc();
 });
+
+var reportVue = null;
+
+function setVueFunc() {
+    reportVue = {
+        attendance: new Vue({
+            el: '#table_member_attendance',
+            data: {
+                members: memberList,
+                records: [],
+                titles: []
+            },
+            methods: {
+                reset: function () {
+                    this.records = [];
+                    this.titles = [];
+                }
+            }
+        }),
+        timeline: new Vue({
+            el: '#table_person_timeline',
+            data: {
+                records: [],
+            },
+            methods: {
+                reset: function () {
+                    this.records = [];
+                }
+            }
+        })
+    };
+}
 
 function getDepts() {
     var xmlHttp = createJsonXmlHttp("sql");
@@ -276,6 +309,7 @@ function getPersonTimeline(number) {
         row_count = 0,
         date = document.getElementById("date_one_day").value,
         date_arr = date.split("-"),
+        timeline_arr = [],
         func = {
             getCount: function () {
                 if (date == "")
@@ -287,7 +321,7 @@ function getPersonTimeline(number) {
                 }
                 showSearching();
                 document.getElementById("report_date").innerText = date_arr[0] + "年" + date_arr[1] + "月" + date_arr[2] + "日";
-                $("#table_person_timeline tbody").empty();
+                reportVue.timeline.reset();
                 var request = {
                         "Command_Name": ["GetLocus_combine_with_record"],
                         "Command_Type": ["Read"],
@@ -358,25 +392,27 @@ function getPersonTimeline(number) {
                         if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
                             var location = revObj.Value[0].location || [{
                                 Status: "0"
-                            }];
+                            }]
                             if (location[0].Status == "1") {
                                 if (location[0].Values) {
                                     location[0].Values.forEach(function (timeline) {
                                         row_count++;
-                                        $("#table_person_timeline tbody").append("<tr>" +
-                                            "<td>" + row_count + "</td>" +
-                                            "<td>" + timeline.time.split(" ")[1] + "</td>" +
-                                            "<td>" + mapList[timeline.map_id].map_name +
-                                            " ( " + timeline.coordinate_x +
-                                            " , " + timeline.coordinate_y +
-                                            " ) </td></tr>");
+                                        timeline_arr.push({
+                                            item: row_count,
+                                            time: timeline.time.split(" ")[1],
+                                            position: mapList[timeline.map_id].map_name +
+                                                " ( " + timeline.coordinate_x +
+                                                " , " + timeline.coordinate_y +
+                                                " )"
+                                        });
                                     });
+                                    reportVue.timeline.records = timeline_arr;
                                 }
                             }
                             count_times++;
                             $("#progress_bar").text(Math.round(count_times / interval_times * 100) + " %");
                             var count = parseInt(startnum, 10) + location[0].amount;
-                            if (total > count) /*interval_times > count_times*/ { //以10000筆資料為基準，分批接受並傳送要求
+                            if (total > count) { //以10000筆資料為基準，分批接受並傳送要求
                                 func.getDatas(location[0].tag_id, count.toString(), total);
                             } else {
                                 completeSearch();
@@ -506,24 +542,28 @@ function getAttendanceList() {
                 xmlHttp.send(JSON.stringify(request));
             },
             inputFP: function () {
-                selectNumberArray.forEach(function (number, i) {
-                    var member_info = memberList[number],
-                        tag_id = memberList[number].tag_id.substring(8),
+                var title_arr = [],
+                    records_arr = [],
+                    date_arr = dateArray[0].split("-");
+                reportVue.attendance.reset();
+                for (var title in RowsList) {
+                    if (RowsList[title]["attendance"] == true)
+                        title_arr.push(title);
+                }
+                reportVue.attendance.titles = title_arr;
+                selectNumberArray.forEach(function (number) {
+                    var tag_id = memberList[number].tag_id.substring(8),
                         attend_start = historyData[0][tag_id].first,
-                        attend_end = historyData[0][tag_id].last,
-                        date_arr = dateArray[0].split("-"),
-                        tr_context = "";
-                    tr_context += "<tr><td>" + (i + 1) + "</td>";
-                    for (var title in RowsList) {
-                        if (RowsList[title]["attendance"] == true)
-                            tr_context += "<td>" + member_info[title] + "</td>";
-                    }
-                    tr_context += "<td>" + (attend_start ? attend_start.time.split(" ")[1] : "缺席") + "</td>" +
-                        "<td>" + (attend_end ? attend_end.time.split(" ")[1] : "缺席") + "</td></tr>";
-                    $("#table_member_attendance tbody").append(tr_context);
+                        attend_end = historyData[0][tag_id].last;
+                    records_arr.push({
+                        number: number,
+                        clockIn: attend_start ? attend_start.time.split(" ")[1] : "缺席",
+                        clockOut: attend_end ? attend_end.time.split(" ")[1] : "缺席"
+                    });
                     $("#current_pages").val(1);
-                    document.getElementById("report_attend_date").innerText = date_arr[0] + "年" + date_arr[1] + "月" + date_arr[2] + "日";
                 });
+                reportVue.attendance.records = records_arr;
+                document.getElementById("report_attend_date").innerText = date_arr[0] + "年" + date_arr[1] + "月" + date_arr[2] + "日";
             }
         };
 
@@ -568,7 +608,6 @@ function getAttendanceList() {
     }
     showSearching();
     interval_times = dateArray.length * selectNumberArray.length; //天數*人數
-    $("#table_member_attendance tbody").empty();
     selectNumberArray.forEach(function (number) {
         var tag_id = memberList[number].tag_id.substring(8);
         targetArray.push({
@@ -624,23 +663,25 @@ var changePage = {
         }
     },
     toPage: function (pages) {
-        var date_arr = dateArray[pages - 1].split("-");
+        var title_arr = [],
+            records_arr = [],
+            date_arr = dateArray[pages - 1].split("-");
         $("#current_pages").val(pages);
-        $("#table_member_attendance tbody").empty();
+        for (var title in RowsList) {
+            if (RowsList[title]["attendance"] == true)
+                title_arr.push(title);
+        }
+        reportVue.attendance.titles = title_arr;
         targetArray.forEach(function (target, i) {
-            var member_info = memberList[target.number],
-                attend_from = historyData[pages - 1][target.tag_id].first,
-                attend_end = historyData[pages - 1][target.tag_id].last,
-                tr_context = "";
-            tr_context += "<tr><td>" + (i + 1) + "</td>";
-            for (var title in RowsList) {
-                if (RowsList[title]["attendance"] == true)
-                    tr_context += "<td>" + member_info[title] + "</td>";
-            }
-            tr_context += "<td>" + (attend_from ? attend_from.time.split(" ")[1] : "缺席") + "</td>" +
-                "<td>" + (attend_end ? attend_end.time.split(" ")[1] : "缺席") + "</td></tr>";
-            $("#table_member_attendance tbody").append(tr_context);
+            var attend_start = historyData[pages - 1][target.tag_id].first,
+                attend_end = historyData[pages - 1][target.tag_id].last;
+            records_arr.push({
+                number: target.number,
+                clockIn: attend_start ? attend_start.time.split(" ")[1] : "缺席",
+                clockOut: attend_end ? attend_end.time.split(" ")[1] : "缺席"
+            });
         });
+        reportVue.attendance.records = records_arr;
         document.getElementById("report_attend_date").innerText = date_arr[0] + "年" + date_arr[1] + "月" + date_arr[2] + "日";
     }
 }
