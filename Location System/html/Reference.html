@@ -1,175 +1,143 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Location System</title>
     <meta charset="utf-8">
+    <title class="i18n" name='i_pageTitle'>Location System</title>
+    <meta id="i18n_pagename" content="common">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="../image/logo/favicon.ico" type="image/x-icon" />
+    <!--Jquery-->
+    <link rel="stylesheet" type="text/css" href="../css/import/jquery-ui-1.12.1.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-3.3.1.min.js"></script>
     <!--BootStrap3-->
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <!--JQuery庫-->
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.4.0.css" />
+    <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/import/bootstrap-3.4.0.min.js"></script>
+    <!--Add icon library-->
+    <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
+    <!-- Icon Navbar-->
+    <link rel="stylesheet" type="text/css" href="../css/icon_navbar/animate.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
     <!--編寫css-->
-    <link rel=stylesheet type="text/css" href="../css/bootstrap_collapsible_navbar.css">
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th,
-        td {
-            padding: 8px;
-            text-align: left;
-            border: 1px solid #b9b0b0;
-        }
-
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-    </style>
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script type="text/javascript" src="../js/navbar_setting.js"></script>
-    <script type="text/javascript">
-        function GetXmlHttpObject() {
-            var xmlHttp = null;
-            try {// Firefox, Opera 8.0+, Safari
-                xmlHttp = new XMLHttpRequest();
-            }
-            catch (e) {//Internet Explorer
-                try {
-                    xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
-                }
-                catch (e) {
-                    xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-                }
-            }
-            return xmlHttp;
-        }
-
-    </script>
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../css/login_user.css" />
+    <link rel="stylesheet" type="text/css" href="../css/slider.css" />
+    <link rel="stylesheet" type="text/css" href="../css/advance_setting_style.css" />
+    <script type="text/javascript" src="../js/general_functions.js"></script>
+    <script type="text/javascript" src="../js/check_permission.js"></script>
+    <script type="text/javascript" src="../js/advance_common.js"></script>
+    <script type="text/javascript" src="../js/advance_reference.js"></script>
 </head>
 
 <body>
     <div class="container">
+        <!--icon navbar-->
+        <div id="icon_navbar"></div>
+
+        <!-- Web Content -->
         <div class="row">
-            <div class="col-lg-12" style="background-color:white;">
-                <!-- 最上方黑色區塊 -->
-                <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
-                </div>
-                <div style="height: 35px;width: 100%;">
-                </div>
+            <div class="col-lg-12 top_nav">
+                <img class="logo" src="../image/logo/yihong_logo.png">
+                <label id="login_user"></label>
+            </div>
+            <div class="tool-bar">
+                <label class="i18n" name="i_language"></label>
+                <select id="language" class="select-lang">
+                    <option value="en">English</option>
+                    <option value="zh-TW">繁體中文</option>
+                    <option value="zh-CN">简体中文</option>
+                </select>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-lg-12" style="background-color:white;">
-                <div id="wrapper">
-                    <!-- 導航欄開啟時的遮罩，設定顏色和長寬就可以形成遮罩 -->
-                    <div class="overlay">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#tab_kalman_filter">Kalman Filter</a></li>
+            <li><a data-toggle="tab" href="#tab_reference">Reference</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="tab_kalman_filter" class="tab-pane fade in active">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="title-shadow">設定Kalman Filiter</h3>
+                        <div class="slider-block">
+                            <span>Predict 1: </span><label class="slider-text" id="text_predict_1">0.8</label>
+                            <input id="slider_predict_1" type="range" class="slider" min="0" step="0.1" max="1"
+                                value="0.8" />
+                            <br>
+                            <span>Predict 2: </span><label class="slider-text" id="text_predict_2">0.8</label>
+                            <input id="slider_predict_2" type="range" class="slider" min="0" step="0.1" max="1"
+                                value="0.8" />
+                            <br>
+                            <span>Predict 3: </span><label class="slider-text" id="text_predict_3">0.8</label>
+                            <input id="slider_predict_3" type="range" class="slider" min="0" step="0.1" max="1"
+                                value="0.8" />
+                            <br>
+                            <span>Predict 4: </span><label class="slider-text" id="text_predict_4">0.8</label>
+                            <input id="slider_predict_4" type="range" class="slider" min="0" step="0.1" max="1"
+                                value="0.8" />
+                            <br>
+                            <span>Convergence: </span><label class="slider-text" id="text_convergence">8</label>
+                            <input id="slider_convergence" type="range" class="slider" min="2" max="1000" value="8">
+                            <br><br>
+                            <div style="text-align: center !important;">
+                                <button class="btn btn-primary" onclick="sendKalmanParams()">
+                                    Send The Settings</button>
+                            </div>
+                        </div>
                     </div>
-                    <!-- Sidebar(Left) -->
-                    <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
-                        <ul class="nav sidebar-nav">
-                            <li><a href="../index.html">
-                                    <img src="../image/home.png">首頁</a>
-                            </li>
-                            <li><a href="../Member_Setting.html">
-                                    <img src="../image/member_setting.png">人員設置</a>
-                            </li>
-                            <li><a href="../Timeline.html">
-                                    <img src="../image/timeline.png">歷史軌跡</a>
-                            </li>
-                            <li><a href="../Map_Setting.html">
-                                    <img src="../image/map_setting.png">地圖設定</a>
-                            </li>
-                            <li><a href="../Anchor_Setting.html">
-                                    <img src="../image/anchor_setting.png">Anchor設定</a>
-                            </li>
-                            <li><a href="../Tag_Setting.html">
-                                    <img src="../image/tag_setting.png">Tag設定</a>
-                            </li>
-                            <li><a href="../Alarm_Setting.html">
-                                    <img src="../image/alarm_setting.png">Alarm設定</a>
-                            </li>
-                            <li><a href="../Reference.html">
-                                    <img src="../image/research.png">Reference</a>
-                            </li>
-                            <li><a href="../Advance_cmd.html">
-                                    <img src="../image/website.png">Advance cmd</a>
-                            </li>
-                            <li><a href="../Update.html">
-                                    <img src="../image/update.png">Update</a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!-- /#sidebar-wrapper -->
-
-                    <!-- Page Content -->
-                    <div id="page-content-wrapper">
-                        <button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas">
-                            <!--<span class="hamb-center"></span>-->
-                            <span class="hamb-top"></span>
-                            <span class="hamb-middle"></span>
-                            <span class="hamb-bottom"></span>
-                        </button>
+                </div>
+            </div>
+            <div id="tab_reference" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <h3 class="title-shadow">測試定位可靠度</h3>
+                        <div style="padding: 20px; font-size: 14px;">
+                            <label>Source Type : </label>
+                            <select id="select_source_type">
+                                <option value="anchor">Main Anchor</option>
+                                <option value="tag">Tag</option>
+                            </select>
+                            <br><br>
+                            <label>Source ID : </label>
+                            <select id="select_source_id"></select>
+                            <input type="text" id="input_source_id" value="" style="display: none; max-width: 70px;" />
+                            <br><br>
+                            <label>Anchor ID : </label>
+                            <select id="select_anchor_id"></select>
+                            <br><br>
+                            <div style="margin-top: 50px; padding-left: 40px; font-size: 16px;">
+                                <input type="checkbox" id="chk_latest_items" value="true"> Latest Items<br><br>
+                                <button class="btn btn-default" id="btn_send" onclick="startRefence()"
+                                    style="margin-left: 30px;">Start</button>
+                            </div>
+                        </div>
+                        <br>
                     </div>
-                    <!-- /#page-content-wrapper -->
+                    <div class="col-lg-8">
+                        <div id="reference_block">
+                            <table id="table_reference_tags" class="table-line">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Source ID</th>
+                                        <th>Anchor ID</th>
+                                        <th>Signal</th>
+                                        <th>Source Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
-
-        <!-- 網頁內容 -->
-        <div class="row">
-            <div class="col-lg-8" style="background-color:white;">
-                <div style="overflow-y:auto; margin:5px; height:100%">
-                    <table id="table_reference_tags" class="ui-widget ui-widget-content">
-                        <thead>
-                            <tr class="ui-widget-header" style="background:lightgray;">
-                                <th>Item</th>
-                                <th>Source ID</th>
-                                <th>Anchor ID</th>
-                                <th>Signal</th>
-                                <th>Source Count</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="col-lg-4" style="background-color:white;">
-                <div style="padding: 20% 0% 20% 20%;">
-                    <label>Source Type:&nbsp;&nbsp;</label>
-                    <select>
-                        <option value="Main Anchor">Main Anchor</option>
-                        <option value="Tag">Tag</option>
-                    </select><br><br>
-                    <label>Source ID:&nbsp;&nbsp;</label>
-                    <select>
-                        <option value="65512">65512</option>
-                        <option value="65514">65514</option>
-                        <option value="65503">65503</option>
-                    </select><br><br>
-                    <label>Anchor ID:&nbsp;&nbsp;</label>
-                    <select>
-                        <option value="65512">65504</option>
-                        <option value="65514">65505</option>
-                        <option value="65503">65506</option>
-                    </select>
-                </div>
-                <div style="text-align: center;">
-                    <input type="checkbox" name="latest_items" value="true">Latest Items<br><br>
-                    <button type="button" onclick="alert('Start!')">Start</button>
-                </div>
-            </div>
-        </div>
-
     </div>
+    <!-- i18n 多語言翻譯 -->
+    <script type="text/javascript" src="../js/i18n/jquery.i18n.properties.js"></script>
+    <script type="text/javascript" src="../js/i18n/language.js"></script>
 </body>
 
 </html>

@@ -1,139 +1,542 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Location System</title>
     <meta charset="utf-8">
+    <title class="i18n" name='i_pageTitle'>Location System</title>
+    <meta id="i18n_pagename" content="common">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--BootStrap3-->
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="shortcut icon" href="../image/logo/favicon.ico" type="image/x-icon" />
     <!--JQuery庫-->
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!--編寫css-->
-    <link rel=stylesheet type="text/css" href="../css/bootstrap_collapsible_navbar.css">
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
+    <link rel="stylesheet" type="text/css" href="../css/import/jquery-ui-1.12.1.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-3.3.1.min.js"></script>
+    <!--BootStrap3-->
+    <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.3.7.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/import/bootstrap-3.3.7.min.js"></script>
+    <!-- Add icon library -->
+    <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
+    <!-- Icon Navbar-->
+    <link rel="stylesheet" type="text/css" href="../css/icon_navbar/animate.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
+    <!--Time picker-->
+    <link rel="stylesheet" href="../css/timepicker/bootstrap-material-datetimepicker.css" />
+    <script type="text/javascript" src="../js/timepicker/moment.js"></script>
+    <script type="text/javascript" src="../js/timepicker/bootstrap-material-datetimepicker.js"></script>
+    <!--edit css-->
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../css/login_user.css" />
+    <link rel=stylesheet type="text/css" href="../css/alarm_setting_style.css" />
+    <!--edit js-->
+    <script type="text/javascript" src="../js/general_functions.js"></script>
+    <script type="text/javascript" src="../js/check_permission.js"></script>
+    <script type="text/javascript" src="../js/alarm_setting.js"></script>
+    <script type="text/javascript" src="../js/time_slot_setting.js"></script>
+    <script type="text/javascript" src="../js/time_slot_group_setting.js"></script>
+    <script type="text/javascript" src="../js/checkInside.js"></script>
+    <script type="text/javascript" src="../js/set_fence.js"></script>
+    <script type="text/javascript" src="../js/set_fence_alarm_group.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../js/Dialog/dialog_fence_add.js"></script>
 
-        th,
-        td {
-            padding: 8px;
-            text-align: left;
-            border: 1px solid #b9b0b0;
-        }
-
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-    </style>
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script type="text/javascript" src="../js/navbar_setting.js"></script>
-    <script type="text/javascript">
-        function GetXmlHttpObject() {
-            var xmlHttp = null;
-            try {// Firefox, Opera 8.0+, Safari
-                xmlHttp = new XMLHttpRequest();
-            }
-            catch (e) {//Internet Explorer
-                try {
-                    xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
-                }
-                catch (e) {
-                    xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-                }
-            }
-            return xmlHttp;
-        }
-
-    </script>
 </head>
 
 <body>
     <div class="container">
+        <!--icon navbar-->
+        <div id="icon_navbar"></div>
+
+        <!-- Web content  -->
         <div class="row">
-            <div class="col-lg-12" style="background-color:white;">
-                <!-- 最上方黑色區塊 -->
-                <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
-                </div>
-                <div style="height: 35px;width: 100%;">
-                </div>
+            <div class="col-lg-12 top_nav">
+                <img class="logo" src="../image/logo/yihong_logo.png">
+                <label id="login_user"></label>
+            </div>
+            <div class="tool-bar">
+                <label class="i18n" name="i_language"></label>
+                <select id="language" class="select-lang">
+                    <option value="en">English</option>
+                    <option value="zh-TW">繁體中文</option>
+                    <option value="zh-CN">简体中文</option>
+                </select>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-lg-12" style="background-color:white;">
-                <div id="wrapper">
-                    <!-- 導航欄開啟時的遮罩，設定顏色和長寬就可以形成遮罩 -->
-                    <div class="overlay">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#tab_alarm_setting" class="i18n" name="i_alarm"></a></li>
+            <li><a data-toggle="tab" href="#tab_time_setting" class="i18n" name="i_timeSlot"></a></li>
+            <li><a data-toggle="tab" href="#tab_fence_setting" class="i18n" name="i_electronicFence"></a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="tab_alarm_setting" class="tab-pane fade in active">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="i18n" name="i_customAlarmGroup"></h3>
+                        <div class="table-block">
+                            <div style="max-width: 100%; overflow-x: auto;">
+                                <table id="table_alarm_mode" class="table-line">
+                                    <thead>
+                                        <th class="i18n" name="i_item" style="min-width:50px;"></th>
+                                        <th class="i18n" name="i_groupName" style="min-width:80px;"></th>
+                                        <th class="i18n" name="i_electronicFence" style="min-width:250px;"></th>
+                                        <th class="i18n" name="i_stayAlarm" style="min-width:150px;"></th>
+                                        <th class="i18n" name="i_hiddenAlarm" style="min-width:150px;"></th>
+                                        <th class="i18n" name="i_matchTime" style="min-width:150px;"></th>
+                                        <th class="i18n" name="i_edit" style="min-width:50px;"></th>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <span>
+                                <label for="btn_add_alarm_group" class="btn-add" title="Add alarm group">
+                                    <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
+                                <input id="btn_add_alarm_group" type="button" class="btn-hidden" />
+                                <label for="btn_delete_alarm_group" class="btn-delete" title="Delete alarm group">
+                                    <i class="fas fa-minus-square" style='font-size:20px;'></i></label>
+                                <input id="btn_delete_alarm_group" type="button" class="btn-hidden" />
+                            </span>
+                        </div>
                     </div>
-                    <!-- Sidebar(Left) -->
-                    <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
-                        <ul class="nav sidebar-nav">
-                            <li><a href="../index.html">
-                                    <img src="../image/home.png">首頁</a>
-                            </li>
-                            <li><a href="../Member_Setting.html">
-                                    <img src="../image/member_setting.png">人員設置</a>
-                            </li>
-                            <li><a href="../Timeline.html">
-                                    <img src="../image/timeline.png">歷史軌跡</a>
-                            </li>
-                            <li><a href="../Map_Setting.html">
-                                    <img src="../image/map_setting.png">地圖設定</a>
-                            </li>
-                            <li><a href="../Anchor_Setting.html">
-                                    <img src="../image/anchor_setting.png">Anchor設定</a>
-                            </li>
-                            <li><a href="../Tag_Setting.html">
-                                    <img src="../image/tag_setting.png">Tag設定</a>
-                            </li>
-                            <li><a href="../Alarm_Setting.html">
-                                    <img src="../image/alarm_setting.png">Alarm設定</a>
-                            </li>
-                            <li><a href="../Reference.html">
-                                    <img src="../image/research.png">Reference</a>
-                            </li>
-                            <li><a href="../Advance_cmd.html">
-                                    <img src="../image/website.png">Advance cmd</a>
-                            </li>
-                            <li><a href="../Update.html">
-                                    <img src="../image/update.png">Update</a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!-- /#sidebar-wrapper -->
-
-                    <!-- Page Content -->
-                    <div id="page-content-wrapper">
-                        <button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas">
-                            <!--<span class="hamb-center"></span>-->
-                            <span class="hamb-top"></span>
-                            <span class="hamb-middle"></span>
-                            <span class="hamb-bottom"></span>
-                        </button>
+                </div>
+            </div>
+            <div id="tab_time_setting" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <h3 class="i18n" name="i_timeSlotSetting"></h3>
+                        <div class="table-block">
+                            <table id="table_time_slot" class="table-line">
+                                <thead>
+                                    <tr>
+                                        <th class="i18n" name="i_item"></th>
+                                        <th class="i18n" name="i_timeSlotName"></th>
+                                        <th class="i18n" name="i_edit"></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <span>
+                                <label for="btn_add_time_slot" class="btn-add i18n-input" selectattr="title"
+                                    selectname="i_addTimeSlot">
+                                    <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
+                                <input id="btn_add_time_slot" type="button" class="btn-hidden" />
+                                <label for="btn_delete_time_slot" class="btn-delete i18n-input" selectattr="title"
+                                    selectname="i_deleteTimeSlot">
+                                    <i class="fas fa-minus-square" style='font-size:20px;'></i></label>
+                                <input id="btn_delete_time_slot" type="button" class="btn-hidden" />
+                            </span>
+                        </div>
                     </div>
-                    <!-- /#page-content-wrapper -->
+                    <div class="col-lg-8">
+                        <h3 class="i18n" name="i_timeSlotGroupSetting"></h3>
+                        <div class="table-block">
+                            <table id="table_time_group" class="table-line">
+                                <thead>
+                                    <tr>
+                                        <th class="i18n" name="i_item"></th>
+                                        <th class="i18n" name="i_timeSlotGroupName"></th>
+                                        <th class="i18n" name="i_timeSlotID"></th>
+                                        <th class="i18n" name="i_edit"></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <span>
+                                <label for="btn_add_time_group" class="btn-add i18n-input" selectattr="title"
+                                    selectname="i_addTimeSlotGroup">
+                                    <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
+                                <input id="btn_add_time_group" type="button" class="btn-hidden" />
+                                <label for="btn_delete_time_group" class="btn-delete i18n-input" selectattr="title"
+                                    selectname="i_deleteTimeSlotGroup">
+                                    <i class="fas fa-minus-square" style='font-size:20px;'></i></label>
+                                <input id="btn_delete_time_group" type="button" class="btn-hidden" />
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tab_fence_setting" class="tab-pane fade">
+                <div class="row" style="margin-top:20px;">
+                    <div class="col-lg-7">
+                        <div class="cvsBlock" id="mapBlock">
+                            <canvas id="canvas_map" style="height:1px; width:1px;">
+                                <span class="i18n" name="i_no_canvas"></span>
+                            </canvas>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <span class="i18n" name="i_posX"></span> : <label id="x" style="width:100px;"></label>
+                            <span class="i18n" name="i_posY"></span> : <label id="y" style="width:100px;"></label>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <nav class="sidebar-menu">
+                            <ul class="nav">
+                                <!--Load Map-->
+                                <li class="nav-li"><label for="input_map" class="btn-sidebar i18n-input"
+                                        selectattr="title" selectname="i_selectMap"><i class="far fa-image"></i></label>
+                                    <input type="button" id="input_map" class="btn-hidden dropdown-toggle"
+                                        data-toggle="dropdown" />
+                                    <ul class="dropdown-menu" role="menu" id="select_map"></ul>
+                                </li>
+                                <!--Restore Size-->
+                                <li class="nav-li"><label for="menu_resize" id="label_resize"
+                                        class="btn-sidebar i18n-input" selectattr="title" selectname="i_restore_scale">
+                                        <i class="fas fa-expand"></i></label>
+                                    <input id="menu_resize" type="button" class="btn-hidden" /></li>
+                                <!--Fence info-->
+                                <li class="nav-li"><label for="menu_fence_info" id="label_fence_info"
+                                        class="btn-sidebar i18n-input" selectattr="title" selectname="i_fenceSetting">
+                                        <i class="fas fa-vector-square"></i></label>
+                                    <input id="menu_fence_info" type="button" class="btn-hidden" /></li>
+                                <!--Fence Alarm Group-->
+                                <li class="nav-li"><label for="menu_fence_alarm_group" id="label_fence_alarm_group"
+                                        class="btn-sidebar i18n-input" title="Fence Collection">
+                                        <i class="fas fa-file-alt"></i></label>
+                                    <input id="menu_fence_alarm_group" type="button" class="btn-hidden" /></li>
+                            </ul>
+                        </nav>
+                        <br>
+                        <div id="block_fence_info">
+                            <label class="i18n" name="i_currentMap"></label> :
+                            <input type="hidden" id="select_map_id" />
+                            <input type="text" id="select_map_name" style="width:30%;" readonly />
+                            <br><br>
+                            <span style="float: right;">
+                                <label for="btn_fence_add" id="label_fence_add" class="btn-add i18n-input"
+                                    selectattr="title" selectname="i_addFence">
+                                    <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
+                                <input id="btn_fence_add" type="button" class="btn-hidden" />
+                                <label for="btn_fence_delete" id="label_fence_delete" class="btn-delete i18n-input"
+                                    selectattr="title" selectname="i_deleteFence">
+                                    <i class="fas fa-minus-square" style='font-size:20px;'></i></label>
+                                <input id="btn_fence_delete" type="button" class="btn-hidden" />
+                            </span>
+                            <label class="i18n" name="i_fenceList"></label> : <br>
+                            <div class="block-list" style="max-height: 492px;">
+                                <table id="table_fence_setting" class="table-line">
+                                    <thead>
+                                        <tr>
+                                            <th class="i18n" name="i_item"></th>
+                                            <th class="i18n" name="i_id"></th>
+                                            <th class="i18n" name="i_name"></th>
+                                            <th class="i18n" name="i_edit"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="block_fence_alarm_group" style="display: none;">
+                            <span style="float: right;">
+                                <label for="btn_fenceAG_add" id="label_fenceAG_add" class="btn-add i18n-input"
+                                    selectattr="title" selectname="i_addFence">
+                                    <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
+                                <input id="btn_fenceAG_add" type="button" class="btn-hidden" />
+                                <label for="btn_fenceAG_delete" id="label_fenceAG_delete" class="btn-delete i18n-input"
+                                    selectattr="title" selectname="i_deleteFence">
+                                    <i class="fas fa-minus-square" style='font-size:20px;'></i></label>
+                                <input id="btn_fenceAG_delete" type="button" class="btn-hidden" />
+                            </span>
+                            <label class="i18n" name="i_fenceAlarmGroup"></label> : <br>
+                            <div class="block-list" style="max-height: 540px;">
+                                <table id="table_fence_alarm_group" class="table-line">
+                                    <thead>
+                                        <tr>
+                                            <th class="i18n" name="i_item"></th>
+                                            <th class="i18n" name="i_id"></th>
+                                            <th class="i18n" name="i_edit"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- 網頁內容 -->
-        <div class="row">
-            <div class="col-lg-6" style="background-color:white;">
-            
-            </div>
-            <div class="col-lg-6" style="background-color:white;">
-                
-            </div>
-        </div>
-
     </div>
+    <div class="hidden_dialog">
+        <!-- Following is a dialog to set alarm group -->
+        <div id="dialog_add_alarm_group" class="dialog" title="Set Alarm Group">
+            <form>
+                <fieldset style="text-align: left;">
+                    <input type="hidden" id="edit_alarm_group_id">
+                    <label class="i18n" name="i_groupName"></label> : <input type="text" style="width:70%;"
+                        id="add_alarm_mode_name">
+                    <br><br>
+                    <label class="i18n" name="i_alarmMode"></label> :
+                    <table style="border:none; min-width:300px;">
+                        <tr>
+                            <td><input id="add_alarm_mode_0" type="checkbox" class='beauty' name="add_alarm_mode"
+                                    value="1"><label for="add_alarm_mode_0" class="i18n"
+                                    name="i_electronicFence"></label><span class="i18n" name="i_fenceAG_info">
+                                </span> <select id="add_alarm_mode_0_fagID"></select><br><span class="i18n"
+                                    name="i_wait_time" style="margin-left:28px;"></span> : <input type="text"
+                                    id="add_alarm_mode_0_time" name="add_alarm_mode_time"
+                                    style="width:90px; margin-top:5px;" /><span class="i18n" name="i_hour"></span>
+                                <input type="hidden" id="add_alarm_mode_0_id" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input id="add_alarm_mode_1" type="checkbox" class='beauty' name="add_alarm_mode"
+                                    value="2"><label for="add_alarm_mode_1" class="i18n"
+                                    name="i_stayAlarm_time"></label> <input type="text" id="add_alarm_mode_1_time"
+                                    name="add_alarm_mode_time" style="max-width:90px"> <span class="i18n"
+                                    name="i_second"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input id="add_alarm_mode_2" type="checkbox" class='beauty' name="add_alarm_mode"
+                                    value="3"><label for="add_alarm_mode_2" class="i18n"
+                                    name="i_hiddenAlarm_time"></label> <input type="text" id="add_alarm_mode_2_time"
+                                    name="add_alarm_mode_time" style="max-width:90px"> <span class="i18n"
+                                    name="i_second"></span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <label class="i18n" name="i_matchTime"></label> : <select id="add_alarm_time_group"></select>
+                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+                </fieldset>
+            </form>
+        </div>
+        <!-- Following is a dialog to edit the time setting -->
+        <div id="dialog_add_time_slot" class="dialog" title="Set Time Slot">
+            <form>
+                <fieldset style="text-align: left;">
+                    <input type="hidden" id="add_time_slot_id" style="width:70%;">
+                    <br>
+                    <label class="i18n" name="i_timeSlotName"></label> : &nbsp;&nbsp;<input type="text"
+                        id="add_time_slot_name" style="width:70%;">
+                    <br><br>
+                    <!--<label class="i18n" name="i_timeSlotSchedule"></label>
+                    <br><br>-->
+                    <table id="table_week_schedule" class="table-line table-noline-inner">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="week_time_check_all">&nbsp;
+                                    <span class="i18n" name="i_aWeek"></span></th>
+                                <th class="i18n" name="i_startTime"></th>
+                                <th></th>
+                                <th class="i18n" name="i_endTime"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox" id="week_time_check_Sun">&nbsp;
+                                    <span class="i18n" name="i_Sunday"></span></td>
+                                <td><input type="text" class="timepicker" id="week_time_start_Sun">:00</td>
+                                <td>~</td>
+                                <td><input type="text" class="timepicker" id="week_time_end_Sun">:59</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" id="week_time_check_Mon">&nbsp;
+                                    <span class="i18n" name="i_Monday"></span></td>
+                                <td><input type="text" class="timepicker" id="week_time_start_Mon">:00</td>
+                                <td>~</td>
+                                <td><input type="text" class="timepicker" id="week_time_end_Mon">:59</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" id="week_time_check_Tue">&nbsp;
+                                    <span class="i18n" name="i_Tuesday"></span></td>
+                                <td><input type="text" class="timepicker" id="week_time_start_Tue">:00</td>
+                                <td>~</td>
+                                <td><input type="text" class="timepicker" id="week_time_end_Tue">:59</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" id="week_time_check_Wed">&nbsp;
+                                    <span class="i18n" name="i_Wednesday"></span></td>
+                                <td><input type="text" class="timepicker" id="week_time_start_Wed">:00</td>
+                                <td>~</td>
+                                <td><input type="text" class="timepicker" id="week_time_end_Wed">:59</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" id="week_time_check_Thu">&nbsp;
+                                    <span class="i18n" name="i_Thursday"></span></td>
+                                <td><input type="text" class="timepicker" id="week_time_start_Thu">:00</td>
+                                <td>~</td>
+                                <td><input type="text" class="timepicker" id="week_time_end_Thu">:59</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" id="week_time_check_Fri">&nbsp;
+                                    <span class="i18n" name="i_Friday"></span></td>
+                                <td><input type="text" class="timepicker" id="week_time_start_Fri">:00</td>
+                                <td>~</td>
+                                <td><input type="text" class="timepicker" id="week_time_end_Fri">:59</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" id="week_time_check_Sat">&nbsp;
+                                    <span class="i18n" name="i_Saturday"></span></td>
+                                <td><input type="text" class="timepicker" id="week_time_start_Sat">:00</td>
+                                <td>~</td>
+                                <td><input type="text" class="timepicker" id="week_time_end_Sat">:59</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br><br>
+                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+                </fieldset>
+            </form>
+        </div>
+        <!-- Following is a dialog to set time group -->
+        <div id="dialog_time_group_slot" class="dialog" title="Set Time slot Group">
+            <form>
+                <fieldset style="text-align: left;">
+                    <input type="hidden" id="add_time_group_id">
+                    <label class="i18n" name="i_timeSlotGroupName"></label>&nbsp;&nbsp; :
+                    <input type="text" id="add_time_group_name" style="width:65%;">
+                    <br><br>
+                    <label class="i18n" name="i_timeSlotSetting"></label> :
+                    <table id="table_time_group_slot" style="min-width:300px;" class="table-line-gray">
+                        <thead>
+                            <tr>
+                                <th class="i18n" name="i_item"></th>
+                                <th class="i18n" name="i_timeSlotName"></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <label for="btn_add_time_group_slot" class="btn-add i18n-input" selectattr="title"
+                        selectname="i_addTimeSlot"><i class="fas fa-plus-square" style='font-size:20px;'></i></label>
+                    <input id="btn_add_time_group_slot" type="button" class="btn-hidden" />
+                    <label for="btn_delete_time_group_slot" class="btn-delete i18n-input" selectattr="title"
+                        selectname="i_deleteTimeSlot"><i class="fas fa-minus-square"
+                            style='font-size:20px;'></i></label>
+                    <input id="btn_delete_time_group_slot" type="button" class="btn-hidden" />
+                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+                </fieldset>
+            </form>
+        </div>
+        <!-- Following is a dialog to add a new fence -->
+        <div id="dialog_add_fence" class="dialog" title="Set Electronic Fence">
+            <form>
+                <fieldset style="text-align: left;">
+                    <input type="hidden" id="add_fence_id">
+                    <label for="add_fence_name" class="i18n" name="i_fenceName"></label> :
+                    <input type="text" id="add_fence_name" style="width:75%;">
+                    <br>
+                    <span>
+                        <!--Add Pos-->
+                        <label for="btn_fence_dot_position" id="label_fence_dot_position" class="btn-add-pos i18n-input"
+                            selectattr="title" selectname="i_addFencePointPos"><i class="fas fa-map-marked-alt"
+                                style='font-size:20px;'></i></label>
+                        <input id="btn_fence_dot_position" type="button" class="btn-hidden" />
+                        <!--Add-->
+                        <label for="btn_fence_dot_add" id="label_fence_dot_add" class="btn-add i18n-input"
+                            selectattr="title" selectname="i_addFencePoint">
+                            <i class="fas fa-plus-square" style='font-size:20px;'></i></label>
+                        <input id="btn_fence_dot_add" type="button" class="btn-hidden" />
+                        <!--Delete-->
+                        <label for="btn_fence_dot_delete" id="label_fence_dot_delete" class="btn-delete i18n-input"
+                            selectattr="title" selectname="i_deleteFencePoint"><i class="fas fa-minus-square"
+                                style='font-size:20px;'></i></label>
+                        <input id="btn_fence_dot_delete" type="button" class="btn-hidden" />
+                    </span><br>
+                    <label class="i18n" name="i_fencePoint"></label> :
+
+                    <table id="table_fence_dot_setting" class="table-line-gray">
+                        <thead>
+                            <tr>
+                                <th class="i18n" name="i_item"></th>
+                                <th class="i18n" name="i_posX"></th>
+                                <th class="i18n" name="i_posY"></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <br>
+                    <label class="i18n" name="i_includeGroup"></label> :
+
+                    <table id="table_fence_group" class="table-line-gray">
+                        <thead>
+                            <tr>
+                                <th class="i18n" name="i_item"></th>
+                                <th class="i18n" name="i_groupName"></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+                </fieldset>
+            </form>
+        </div>
+        <!-- Following is a dialog to add a new fence dot -->
+        <div id="dialog_add_fence_dot" class="dialog" title="Set Fence Coordinate Point">
+            <form>
+                <fieldset style="text-align: left;">
+                    <label for="add_dot_x" class="i18n" name="i_posX"></label> :
+                    <input type="text" id="add_dot_x" style="width:80%;">
+                    <br><br>
+                    <label for="add_dot_y" class="i18n" name="i_posY"></label> :
+                    <input type="text" id="add_dot_y" style="width:80%;">
+                    <br><br>
+                    <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+                </fieldset>
+            </form>
+        </div>
+        <!-- Following is a dialog to set Fence Collection -->
+        <div id="dialog_fence_alarm_group" class="dialog" title="Set Fence Collection">
+            <form>
+                <fieldset style="text-align: left;">
+                    <label for="add_FAG_id" class="i18n" name="i_fenceAlarmGroupID"></label> :
+                    <input type="text" id="add_FAG_id" style="width:50%;" />
+                    <!--<input type="hidden" id="add_FAG_id">
+                    <label for="add_FAG_name">Fence Alarm Group Name</label> :
+                    <input type="text" id="add_FAG_name" style="width:50%;">-->
+                    <br><br>
+                    <table id="table_fence_list">
+                        <tr>
+                            <td class="left">
+                                <div class="block-fence-list">
+                                    <label class="fence-list-title i18n" name="i_includedFences"></label>
+                                    <table id="table_included_fences" class="table-line-gray">
+                                        <thead>
+                                            <tr>
+                                                <th class="i18n" name="i_item"></th>
+                                                <th class="i18n" name="i_id"></th>
+                                                <th class="i18n" name="i_name"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </td>
+                            <td class="midden"><span style="display:inline-block;">
+                                    <label for="btn_fence_list_add" id="label_fence_list_add"
+                                        class="btn-arrow i18n-input" selectattr="title" selectname="i_addList">
+                                        <i class="fas fa-caret-square-left" style='font-size:20px;'></i></label>
+                                    <input id="btn_fence_list_add" type="button" class="btn-hidden" /><br>
+                                    <label for="btn_fence_list_delete" id="label_fence_list_delete"
+                                        class="btn-arrow i18n-input" selectattr="title" selectname="i_deleteList">
+                                        <i class="fas fa-caret-square-right" style='font-size:20px;'></i></label>
+                                    <input id="btn_fence_list_delete" type="button" class="btn-hidden" />
+                                </span></td>
+                            <td class="right">
+                                <div class="block-fence-list">
+                                    <label class="fence-list-title i18n" name="i_excludedFences"></label>
+                                    <table id="table_remaining_fences" class="table-line-gray">
+                                        <thead>
+                                            <tr>
+                                                <th class="i18n" name="i_item"></th>
+                                                <th class="i18n" name="i_id"></th>
+                                                <th class="i18n" name="i_name"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <!-- i18n translation -->
+    <script type="text/javascript" src="../js/i18n/jquery.i18n.properties.js"></script>
+    <script type="text/javascript" src="../js/i18n/language.js"></script>
 </body>
 
 </html>

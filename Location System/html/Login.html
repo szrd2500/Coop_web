@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title class="i18n" name='i_pageTitle'>Location System</title>
+    <meta id="i18n_pagename" content="common">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="../image/logo/favicon.ico" type="image/x-icon" />
+    <!--JQuery庫-->
+    <link rel="stylesheet" type="text/css" href="../css/import/jquery-ui-1.12.1.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-3.3.1.min.js"></script>
+    <!--BootStrap3-->
+    <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.3.7.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/import/bootstrap-3.3.7.min.js"></script>
+    <!--Add icon library-->
+    <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
+    <!--Edit css-->
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <style>
+        h4 {
+            font-family: 'Microsoft JhengHei', 'sans-serif';
+            color: black;
+        }
+
+        span {
+            font-family: 'Microsoft JhengHei', 'sans-serif';
+        }
+
+        .block {
+            position: relative;
+            margin: auto;
+            max-width: 350px;
+            width: auto;
+            height: 240px;
+            background: lightgray;
+            border-radius: 2px;
+            box-shadow: 0px 0px 4px 2px rgb(41, 41, 41) inset;
+            padding: 5px;
+        }
+
+        .input-group {
+            margin: 10px;
+        }
+
+        .btn-submit {
+            float: right;
+            margin: 5px 10px;
+        }
+    </style>
+    <!--Cookie-->
+    <script type="text/javascript" src="../js/import/js.cookie.min.js"></script>
+    <!--Edit js-->
+    <script type="text/javascript" src="../js/general_functions.js"></script>
+    <script type="text/javascript" src="../js/login_security.js"></script>
+</head>
+
+<body>
+    <div class="container" style="margin:auto;">
+        <!-- Web content -->
+        <div class="row">
+            <div class="col-lg-12 top_nav">
+                <img class="logo" src="../image/logo/yihong_logo.png">
+                <label id="login_user"></label>
+            </div>
+            <div class="tool-bar">
+                <label class="i18n" name="i_language"></label>
+                <select id="language" class="select-lang">
+                    <option value="en">English</option>
+                    <option value="zh-TW">繁體中文</option>
+                    <option value="zh-CN">简体中文</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="block">
+                    <form>
+                        <span style="text-align:center;">
+                            <h4 class="i18n" name="i_userLogin"></h4>
+                        </span>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" id="account" class="form-control i18n-input" selectattr="placeholder"
+                                selectname="i_account" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" />
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password" id="password" class="form-control i18n-input"
+                                selectattr="placeholder" selectname="i_password"
+                                onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" />
+                        </div>
+                        <hr>
+                        <div style="margin-left:10px;">
+                            <input type="checkbox" id="remember"> <span class="i18n" name="i_remember"
+                                style="color:rgb(78, 78, 78);"></span>
+                        </div>
+                    </form>
+                    <input type="button" class="btn btn-primary btn-submit i18n-input" selectattr="value"
+                        selectname="i_login" onclick="verifyLogin()" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- i18n 多語言翻譯 -->
+    <script type="text/javascript" src="../js/i18n/jquery.i18n.properties.js"></script>
+    <script type="text/javascript" src="../js/i18n/language.js"></script>
+</body>
+
+</html>

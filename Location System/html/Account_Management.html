@@ -1,0 +1,239 @@
+<!--Permission management page, only the Administrator can enter-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title class="i18n" name='i_pageTitle'>Location System</title>
+    <meta id="i18n_pagename" content="common">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="../image/logo/favicon.ico" type="image/x-icon" />
+    <!--BootStrap3-->
+    <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.3.7.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/import/bootstrap-3.3.7.min.js"></script>
+    <!--JQuery庫-->
+    <link rel="stylesheet" type="text/css" href="../css/import/jquery-ui-1.12.1.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-3.3.1.min.js"></script>
+    <!-- Add icon library -->
+    <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
+    <!-- Icon Navbar-->
+    <link rel="stylesheet" type="text/css" href="../css/icon_navbar/animate.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
+    <!--Edit css-->
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../css/login_user.css" />
+    <style>
+        th,
+        td {
+            font-weight: bold;
+            font-family: 'Microsoft JhengHei', 'sans-serif';
+            border: 1px solid rgb(219, 219, 219);
+            padding: 5px;
+        }
+
+        .table thead tr {
+            border: 1px solid rgb(219, 219, 219);
+        }
+
+        .table th {
+            background-color: rgb(201, 201, 201);
+            text-align: center;
+        }
+
+        .table td {
+            background-color: rgb(255, 255, 255);
+        }
+
+        label {
+            font-weight: bold;
+            font-family: 'Microsoft JhengHei', 'sans-serif';
+        }
+
+        input[type="file"] {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .table-line tbody tr {
+            background-color: rgb(255, 255, 255);
+        }
+
+        .table-line tbody tr:hover {
+            background-color: rgb(255, 194, 102);
+            cursor: pointer;
+        }
+
+        .table-line th {
+            border: 1px solid rgb(71, 71, 71);
+            background: rgb(88, 88, 88);
+            color: white;
+            text-align: center;
+        }
+
+        .table-line td {
+            border: 1px solid rgb(71, 71, 71);
+        }
+
+
+        .noborder-block {
+            border: none;
+            padding: 0px;
+        }
+
+        .noborder-block th,
+        .noborder-block td {
+            border: none;
+        }
+
+        .btn-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .btn-delete {
+            cursor: pointer;
+            color: rgb(252, 55, 55);
+            font-size: 18px;
+            margin: 0px 5px 0px 0px;
+        }
+
+        .btn-delete:hover {
+            color: rgb(255, 152, 152)
+        }
+
+        .btn-add {
+            cursor: pointer;
+            color: rgb(105, 196, 0);
+            font-size: 18px;
+        }
+
+        .btn-add:hover {
+            color: rgb(179, 226, 126);
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../js/general_functions.js"></script>
+    <script type="text/javascript" src="../js/check_permission.js"></script>
+    <script type="text/javascript" src="../js/account_manage.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!--icon navbar-->
+        <div id="icon_navbar"></div>
+
+        <div class="row">
+            <div class="col-lg-12 top_nav">
+                <img class="logo" src="../image/logo/yihong_logo.png">
+                <label id="login_user"></label>
+            </div>
+            <div class="tool-bar">
+                <label class="i18n" name="i_language"></label>
+                <select id="language" class="select-lang">
+                    <option value="en">English</option>
+                    <option value="zh-TW">繁體中文</option>
+                    <option value="zh-CN">简体中文</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Web content -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div style="float: right;">
+                    <label for="btn_account_add" id="label_account_add" class="btn-add i18n-input" selectattr="title"
+                        selectname="i_add"><i class="fas fa-plus-square" style='font-size:20px;'></i></label>
+                    <input id="btn_account_add" type="button" class="btn-hidden" />
+                    <label for="btn_account_delete" id="label_account_delete" class="btn-delete i18n-input"
+                        selectattr="title" selectname="i_delete"><i class="fas fa-minus-square"
+                            style='font-size:20px;'></i></label>
+                    <input id="btn_account_delete" type="button" class="btn-hidden" />
+                </div>
+                <table class="table-line" id="table_account">
+                    <thead>
+                        <tr>
+                            <th class="i18n" name="i_item"></th>
+                            <th class="i18n" name="i_account"></th>
+                            <th class="i18n" name="i_permission"></th>
+                            <th class="i18n" name="i_status"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <br>
+            </div>
+            <div class="col-lg-4">
+                <table class="table" id="table_permission" style="margin-top:10px;">
+                    <thead>
+                        <tr>
+                            <th class="i18n" name="i_pageName"></th>
+                            <th class="i18n" name="i_permission"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Dialog -->
+    <div id="dialog_account_setting" class="dialog" title="Set Account Information">
+        <form>
+            <fieldset style="text-align: left;">
+                <table id="table_account_setting" class="noborder-block">
+                    <input type="hidden" id="edit_id" value="" />
+                    <tr>
+                        <td><span class="i18n" name="i_account"></span> : </td>
+                        <td><input type="text" id="edit_account" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" /></td>
+                    </tr>
+                    <tr>
+                        <td><span class="i18n" name="i_name"></span> : </td>
+                        <td><input type="text" id="edit_name" /></td>
+                    </tr>
+                    <tr>
+                        <td><span class="i18n" name="i_password"></span> : </td>
+                        <td><input type="text" id="edit_password" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="i18n" name="i_status"></span> : </td>
+                        <td><input type="radio" name="edit_is_active" id="is_not_active" value="0" />
+                            <label for="is_not_active" class="i18n" name="i_disable"></label>
+                            <input type="radio" name="edit_is_active" id="is_active" value="1" />
+                            <label for="is_active" class="i18n" name="i_enable"></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="i18n" name="i_permission"></span> : </td>
+                        <td><select id="edit_permission">
+                                <option value="0" class="i18n" name="i_low"></option>
+                                <option value="1" class="i18n" name="i_mid"></option>
+                                <option value="2" class="i18n" name="i_high"></option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+            </fieldset>
+        </form>
+    </div>
+    <!-- i18n 多語言翻譯 -->
+    <script type="text/javascript" src="../js/i18n/jquery.i18n.properties.js"></script>
+    <script type="text/javascript" src="../js/i18n/language.js"></script>
+</body>
+
+</html>

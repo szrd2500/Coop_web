@@ -1,0 +1,201 @@
+/*.nav-tabs {
+    margin-left: 50px;
+}*/
+
+.tab-content {
+    margin: 0px 0px 0px 10px;
+}
+
+label {
+    font-family: 'Microsoft JhengHei', 'sans-serif';
+}
+
+th,
+td {
+    font-family: 'Microsoft JhengHei', 'sans-serif';
+}
+
+.report-page {
+    width: auto;
+    height: auto;
+    min-height: 1300px;
+    margin: 10px 10px 20px 10px;
+    padding: 20px;
+    border: 1px solid black;
+    /*border-radius: 5px;*/
+    background-color: rgb(240, 240, 240);
+    text-align: center;
+    box-shadow: 6px 6px 3px rgb(0, 0, 0);
+}
+
+.report-page h3 {
+    color: black;
+    margin: auto;
+    font-family: 'Microsoft JhengHei', 'sans-serif';
+}
+
+.report-page label {
+    float: left;
+    color: black;
+}
+
+.report-page input {
+    background: rgb(255, 255, 255) !important;
+}
+
+.table-line th {
+    border: 1px solid rgb(49, 49, 49);
+    background: rgb(194, 194, 194);
+    color: rgb(0, 0, 0);
+    text-align: center;
+}
+
+.table-line td {
+    border: 1px solid rgb(0, 0, 0);
+    background: #f2f2f2;
+    color: black;
+    padding: 2px 5px;
+}
+
+.info-table td:nth-child(odd) {
+    background-color: rgb(224, 224, 224);
+}
+
+#search_member_list th:nth-child(1),
+#table_members th:nth-child(1) {
+    padding: 2px 5px;
+    text-align: left;
+}
+
+.nav-tabs {
+    margin-bottom: 10px;
+}
+
+.nav-tabs a {
+    font-family: 'Microsoft JhengHei', 'sans-serif';
+}
+
+.nav-tabs li.active a {
+    color: rgb(255, 255, 255) !important;
+    font-family: 'Microsoft JhengHei', 'sans-serif';
+}
+
+tr.selected td {
+    background-color: #7ccfff;
+}
+
+.search_bar {
+    margin: 10px 0px 20px 0px;
+    border: 1px solid rgb(46, 46, 46);
+    padding: 20px;
+    /*box-shadow:1px 1px 3px 2px #424242 inset;
+    background: #888888;*/
+    background: #c2c2c2;
+}
+
+.btn {
+    padding: 3px 8px;
+    margin: 5px;
+}
+
+.btn-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.btn-delete {
+    cursor: pointer;
+    color: rgb(255, 38, 38);
+    font-size: 20px;
+    margin: 0px 5px 0px 5px;
+}
+
+.btn-delete:hover {
+    color: rgb(255, 113, 113);
+}
+
+.btn-add {
+    cursor: pointer;
+    color: rgb(0, 119, 255);
+    font-size: 20px;
+    margin: 0px 5px 0px 5px;
+}
+
+.btn-add:hover {
+    color: rgb(90, 158, 236);
+}
+
+.btn-search {
+    float: right;
+    cursor: pointer;
+    background: transparent !important;
+    color: #fc8e10;
+    font-size: 20px;
+}
+
+.btn-search:hover {
+    color: #ffdaaf;
+}
+
+input[type="text"] {
+    width: 160px;
+}
+
+.table-noborder td {
+    padding: 3px 4px;
+    min-width: 80px;
+}
+
+.member-list {
+    max-height: 300px;
+    width: 100%;
+    overflow: auto;
+}
+
+
+.member-table th {
+    background: rgb(99, 99, 99);
+    color: white;
+}
+
+.member-table th,
+.member-table td {
+    border: 1px solid rgb(36, 36, 36);
+    padding: 2px 5px;
+}
+
+.progress {
+    top: 10px;
+    left: 45%;
+    position: absolute;
+    margin: auto;
+    width: auto;
+    height: auto;
+    display: none;
+    padding: 8px 12px;
+    border: 2px solid #ff6d13;
+    border-radius: 5px;
+    background: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+}
+
+.progress i {
+    color: rgb(255, 255, 255);
+}
+
+#report_pages_control {
+    border: 1px solid white;
+    border-radius: 5px;
+    background-color: rgb(211, 211, 211);
+    padding: 0px 10px;
+}
+
+#report_pages_control button {
+    margin: 5px 0px;
+}

@@ -1,6 +1,20 @@
+var token = "";
 $(function () {
+    var h = document.documentElement.clientHeight;
+    $("#chart-container").css("height", h - 150 + "px");
+    
+    token = getToken();
+    /**
+     * Check this page's permission and load navbar
+     */
+    if (!getPermissionOfPage("Member_Setting")) {
+        alert("Permission denied!");
+        window.location.href = '../index.html';
+    }
+    setNavBar("Member_Setting", "Job_Title_Setting");
+
     var size = 10;
-    var default_color = '#4CAF50';
+    var default_color = '#2eb82e';
     var datascource = {
         'name': 'JobTitle',
         'id': '0',
@@ -9,7 +23,8 @@ $(function () {
 
     var requestArray = {
         "Command_Type": ["Read"],
-        "Command_Name": ["GetJobTitle_relation"]
+        "Command_Name": ["GetJobTitle_relation"],
+        "api_token": [token]
     };
 
     var form, dialog = $("#dialog_edit_node").dialog({
@@ -17,18 +32,17 @@ $(function () {
     });
 
     drawPosition(default_color, size); //預設的點顏色
-    $("#edit_dot_color").css('background-color', default_color);
     $("#edit_dot_color").val(default_color);
     $("#edit_dot_color").change(function () { //設定change事件
         drawPosition($(this).val(), size);
     });
 
-    var xmlHttp = createJsonXmlHttp();
+    var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (revObj.success == 1) {
-                datascource.children = revObj.Values;
+            if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                datascource.children = revObj.Value[0].Values;
             } else {
                 datascource.children = null;
             }
@@ -67,26 +81,25 @@ $(function () {
                 var $node = $('#selected-node').data('node');
                 var nodeType = $('input[name="node-type"]:checked');
                 if (!$node) {
-                    alert('Please select one node in orgchart');
+                    alert($.i18n.prop('i_alertChart_5'));
                     return;
                 }
                 if (!nodeType.length) {
-                    alert('Please select a node type');
+                    alert($.i18n.prop('i_alertChart_6'));
                     return;
                 }
                 if (!$('.orgchart').length) {
-                    alert('Please creat the root node firstly when you want to build up the orgchart from the scratch');
+                    alert($.i18n.prop('i_alertChart_1'));
                     return;
                 }
 
                 $("#edit_dot_color").val(default_color);
-                $("#edit_dot_color").css('background-color', default_color);
                 drawPosition(default_color, '10');
 
                 //設定add node的跳出視窗
                 dialog = $("#dialog_edit_node").dialog({
                     autoOpen: false,
-                    height: 500,
+                    height: 450,
                     width: 400,
                     modal: true,
                     buttons: {
@@ -119,29 +132,30 @@ $(function () {
                         return;
                     }
                     if (!nodeVals.length) {
-                        alert('Please input value for node name');
+                        alert($.i18n.prop('i_alertChart_2'));
                         return;
                     }
-                    var addColor = colorToHex($("#edit_dot_color").css('background-color'));
+                    var addColor = colorToHex($("#edit_dot_color").val());
                     var addRequest = {
                         "Command_Type": ["Read"],
-                        "Command_Name": ["AddJobTitle"]
+                        "Command_Name": ["AddJobTitle"],
+                        "api_token": [token]
                     };
-                    var addXmlHttp = createJsonXmlHttp();
+                    var addXmlHttp = createJsonXmlHttp('sql');
                     if (nodeType.val() === 'siblings') { //增加同層節點
                         if ($node[0].id === oc.$chart.find('.node:first')[0].id) {
-                            alert('You are not allowed to directly add sibling nodes to root node');
+                            alert($.i18n.prop('i_alertChart_3'));
                             return;
                         }
                         addXmlHttp.onreadystatechange = function () {
                             if (addXmlHttp.readyState == 4 || addXmlHttp.readyState == "complete") {
                                 var revObj = JSON.parse(this.responseText);
-                                if (revObj.success == 1) {
+                                if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
                                     oc.addSiblings($node, nodeVals.map(function (item) {
                                         return {
                                             'name': item,
                                             'relationship': '110',
-                                            'id': revObj.Values.c_id,
+                                            'id': revObj.Value[0].Values.c_id,
                                             "color": addColor
                                         };
                                     }));
@@ -159,7 +173,7 @@ $(function () {
                         addXmlHttp.onreadystatechange = function () {
                             if (addXmlHttp.readyState == 4 || addXmlHttp.readyState == "complete") {
                                 var revObj = JSON.parse(this.responseText);
-                                if (revObj.success == 1) {
+                                if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
                                     var hasChild = $node.parent().attr('colspan') > 0 ? true : false;
                                     if (!hasChild) {
                                         var rel = nodeVals.length > 1 ? '110' : '100';
@@ -167,7 +181,7 @@ $(function () {
                                             return {
                                                 'name': item,
                                                 'relationship': rel,
-                                                'id': revObj.Values.c_id,
+                                                'id': revObj.Value[0].Values.c_id,
                                                 "color": addColor
                                             };
                                         }));
@@ -176,7 +190,7 @@ $(function () {
                                             return {
                                                 'name': item,
                                                 'relationship': '110',
-                                                'id': revObj.Values.c_id,
+                                                'id': revObj.Value[0].Values.c_id,
                                                 "color": addColor
                                             };
                                         }));
@@ -200,10 +214,10 @@ $(function () {
             $('#btn-delete-nodes').on('click', function () {
                 var $node = $('#selected-node').data('node');
                 if (!$node) {
-                    alert('Please select one node in orgchart');
+                    alert($.i18n.prop('i_alertChart_5'));
                     return;
                 } else if ($node[0] === $('.orgchart').find('.node:first')[0]) {
-                    if (!window.confirm('Are you sure you want to delete the whole chart?')) {
+                    if (!window.confirm($.i18n.prop('i_alertChart_4'))) {
                         return;
                     }
                 }
@@ -217,13 +231,14 @@ $(function () {
                 var deleteRequest = {
                     "Command_Type": ["Read"],
                     "Command_Name": ["DeleteJobTitle"],
-                    "Value": nodeIds
+                    "Value": nodeIds,
+                    "api_token": [token]
                 };
-                var deleteXmlHttp = createJsonXmlHttp();
+                var deleteXmlHttp = createJsonXmlHttp('sql');
                 deleteXmlHttp.onreadystatechange = function () {
                     if (deleteXmlHttp.readyState == 4 || deleteXmlHttp.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (revObj.success == 1) {
+                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
                             oc.removeNodes($node);
                             $('#selected-node').val('').data('node', null);
                         }
@@ -236,19 +251,18 @@ $(function () {
             $('#btn-edit-nodes').on('click', function () {
                 var $node = $('#selected-node').data('node');
                 if (!$node) {
-                    alert('Please select one node in orgchart');
+                    alert($.i18n.prop('i_alertChart_5'));
                     return;
                 }
                 var nodeTitle = $node.children('.title');
-                var nodeColor = colorToRGBA(nodeTitle.css('background-color'));
+                var nodeColor = colorToHex(nodeTitle.css('background-color'));
                 $("#edit_type_name").val(nodeTitle.text());
                 $("#edit_dot_color").val(nodeColor);
-                $("#edit_dot_color").css('background-color', nodeColor);
                 drawPosition(nodeColor, size);
                 //設定edit node的跳出視窗
                 dialog = $("#dialog_edit_node").dialog({
                     autoOpen: false,
-                    height: 500,
+                    height: 450,
                     width: 400,
                     modal: true,
                     buttons: {
@@ -280,7 +294,7 @@ $(function () {
                         $("#edit_type_name").addClass("ui-state-error");
                         return;
                     }
-                    var editColor = $("#edit_dot_color").css('background-color');
+                    var editColor = $("#edit_dot_color").val();
 
                     var editRequest = {
                         "Command_Type": ["Read"],
@@ -289,13 +303,14 @@ $(function () {
                             "c_id": $node[0].id,
                             "name": editName,
                             "color": colorToHex(editColor)
-                        }
+                        },
+                        "api_token": [token]
                     };
-                    var editXmlHttp = createJsonXmlHttp();
+                    var editXmlHttp = createJsonXmlHttp('sql');
                     editXmlHttp.onreadystatechange = function () {
                         if (editXmlHttp.readyState == 4 || editXmlHttp.readyState == "complete") {
                             var revObj = JSON.parse(this.responseText);
-                            if (revObj.success == 1) {
+                            if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
                                 var nodeTitle = $node.children('.title');
                                 if ($node.find('.symbol').length) {
                                     nodeTitle.text(editName).css('background-color', editColor)
@@ -316,61 +331,6 @@ $(function () {
     };
     xmlHttp.send(JSON.stringify(requestArray));
 
-    function createJsonXmlHttp() {
-        var newXmlHttp = GetXmlHttpObject();
-        if (newXmlHttp == null) {
-            alert("Browser does not support HTTP Request");
-            return;
-        }
-        newXmlHttp.open("POST", "sql", true);
-        newXmlHttp.setRequestHeader("Content-type", "application/json");
-        return newXmlHttp;
-    }
-
-    function colorToHex(color) {
-        color = typeof (color) != "string" ? color.toString() : color;
-        if (color.indexOf('#') == 0) {
-            return color;
-        } else {
-            var colorArr = color.substring(color.indexOf("(") + 1, color.length - 1).split(",");
-            var hexColor = "#";
-            for (i = 0; i < colorArr.length; i++) {
-                if (i == 3) {
-                    var persentHex = Number(Math.floor(colorArr[i] * 255)).toString(16);
-                    if (hexColor != "FF")
-                        hexColor += persentHex.length === 1 ? "0" + persentHex : persentHex;
-                } else {
-                    var hexStr = Number(colorArr[i]).toString(16);
-                    hexColor += hexStr.length === 1 ? "0" + hexStr : hexStr;
-                }
-            }
-            return hexColor.toUpperCase();
-        }
-    }
-
-    function colorToRGBA(color) {
-        color = typeof (color) != "string" ? color.toString() : color;
-        if (color.indexOf('#') == 0) {
-            colorLen = color.length;
-            if (colorLen == 7) { //rgb
-                var r = parseInt(color.substring(1, 2), 16);
-                var g = parseInt(color.substring(3, 4), 16);
-                var b = parseInt(color.substring(5, 6), 16);
-                return 'rgb(' + r + ', ' + g + ', ' + b + ')';
-            } else if (colorLen == 9) { //rgba
-                var r = parseInt(color.substring(1, 2), 16);
-                var g = parseInt(color.substring(3, 4), 16);
-                var b = parseInt(color.substring(5, 6), 16);
-                var a = parseInt(color.substring(7, 8), 16);
-                return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
-            } else {
-                return color;
-            }
-        } else {
-            return color;
-        }
-    }
-
     function drawPosition(color, size) {
         var canvas = document.getElementById('canvas_dot');
         var ctx = canvas.getContext('2d');
@@ -378,16 +338,18 @@ $(function () {
             y = canvas.height / 2,
             radius = size; //30;
         ctx.clearRect(0, 0, canvas.width, canvas.height); //先還原
-        //畫倒水滴形
         ctx.beginPath();
-        ctx.arc(x, y, radius, Math.PI * (1 / 6), Math.PI * (5 / 6), true);
-        ctx.lineTo(x, y + radius * 2);
+        ctx.lineWidth = 2;
+        ctx.arc(x, y - radius * 2, radius, Math.PI * (1 / 6), Math.PI * (5 / 6), true);
+        //circle(x座標,y座標,半徑,開始弧度,結束弧度,順t/逆f時針)
+        ctx.lineTo(x, y);
         ctx.closePath();
-        ctx.fillStyle = color; //'#00e68a';
+        ctx.strokeStyle = '#000000';
+        ctx.stroke();
+        ctx.fillStyle = color != "" ? color : '#2eb82e';
         ctx.fill();
-        //畫中心白色圓形
         ctx.beginPath();
-        ctx.arc(x, y, radius / 2.5, 0, Math.PI * 2, true);
+        ctx.arc(x, y - radius * 2, radius / 2.5, 0, Math.PI * 2, true);
         ctx.closePath();
         ctx.fillStyle = '#ffffff';
         ctx.fill();

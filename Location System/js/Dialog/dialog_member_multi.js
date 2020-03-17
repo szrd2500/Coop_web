@@ -1,4 +1,8 @@
+var token = "";
+
 $(function () {
+    token = getToken();
+
     var dialog, form,
         sel_item = $("#multi_edit_item"),
         sel_value = $("#multi_edit_value"),
@@ -9,8 +13,8 @@ $(function () {
     var SendResult = function () {
         allFields.removeClass("ui-state-error");
         var valid = true;
-        valid = valid && checkLength(sel_item, "multi set", 0, 20);
-        valid = valid && checkLength(sel_value, "multi set", 0, 20);
+        valid = valid && checkLength(sel_item, $.i18n.prop('i_mapAlert_13'), 0, 20);
+        valid = valid && checkLength(sel_value, $.i18n.prop('i_mapAlert_13'), 0, 20);
 
         if (valid) {
             var num_arr = [];
@@ -20,7 +24,8 @@ $(function () {
                     num_arr.push(checkboxs[j].value);
             }
             var request = {
-                "Command_Type": ["Write"]
+                "Command_Type": ["Write"],
+                "api_token": [token]
             };
             var request_arr = [];
 
@@ -55,15 +60,25 @@ $(function () {
                     }
                     request.Value = request_arr;
                     break;
+                case "alarm_group":
+                    request.Command_Name = ["multiEdit_StaffAlarmGroup"];
+                    for (i = 0; i < num_arr.length; i++) {
+                        request_arr.push({
+                            "number": num_arr[i],
+                            "alarm_group": sel_value.val()
+                        });
+                    }
+                    request.Value = request_arr;
+                    break;
                 default:
-                    alert("Please select other item.");
+                    alert($.i18n.prop('i_alertError_12'));
             }
 
             var xmlHttp = createJsonXmlHttp('sql');
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
-                    if (revObj.success > 0)
+                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0)
                         UpdateMemberList();
                 }
             };

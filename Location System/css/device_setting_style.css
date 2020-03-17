@@ -1,0 +1,245 @@
+.nav-tabs {
+    margin-top: 10px;
+}
+
+th {
+    text-align: left;
+    background: white;
+}
+
+td {
+    text-align: left;
+    background: white;
+    color: rgb(58, 58, 58);
+}
+
+input[type='checkbox'] {
+    cursor: pointer;
+}
+
+.container select,
+.container select option,
+.container option label,
+.container option span,
+.container input[type=text],
+.container input[type=search] {
+    background: #ffffff !important;
+    color: black;
+    border: 1px solid lightgray;
+}
+
+/**
+ * sticky-table
+**/
+
+table.sticky-table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.sticky-table th {
+    padding: 5px;
+    text-align: center;
+    outline: 2px solid rgb(68, 68, 68);
+    outline-offset: -1px;
+    width: 150px;
+}
+
+.sticky-table td {
+    padding: 5px;
+    text-align: center;
+    outline: 2px solid rgb(68, 68, 68);
+    outline-offset: -1px;
+    background: #ffffff;
+}
+
+.sticky-table td:nth-child(1),
+.sticky-table th:nth-child(1) {
+    position: -webkit-sticky;
+    position: sticky;
+    width: 65px;
+    left: 0px;
+    z-index: 1;
+    background: #e6f5ff;
+    padding-left: 6px !important;
+    text-align: left;
+}
+
+.sticky-table td:nth-child(1) {
+    cursor: pointer;
+}
+
+.sticky-table td:nth-child(2),
+.sticky-table th:nth-child(2) {
+    position: -webkit-sticky;
+    position: sticky;
+    width: 55px;
+    left: 65px;
+    z-index: 1;
+    background: #e6f5ff;
+}
+
+.sticky-table td:nth-child(3),
+.sticky-table th:nth-child(3) {
+    position: -webkit-sticky;
+    position: sticky;
+    width: 100px;
+    left: 120px;
+    z-index: 1;
+    background: #e6f5ff;
+}
+
+.sticky-table td:nth-child(4),
+.sticky-table th:nth-child(4) {
+    position: -webkit-sticky;
+    position: sticky;
+    width: 150px;
+    left: 220px;
+    z-index: 1;
+    background: #e6f5ff;
+}
+
+.sticky-table thead tr:nth-child(1) th {
+    top: 0px;
+    position: sticky;
+    position: -webkit-sticky;
+    background: rgb(210, 210, 210);
+    outline: 2px solid rgb(68, 68, 68);
+    outline-offset: -1px;
+    color: black;
+}
+
+.sticky-table thead tr:nth-child(2) th {
+    top: 30px;
+    position: sticky;
+    position: -webkit-sticky;
+    background: rgb(210, 210, 210);
+    outline: 2px solid rgb(68, 68, 68);
+    outline-offset: -1px;
+    padding: 3px;
+    color: #000000;
+}
+
+.sticky-table th:nth-child(1),
+.sticky-table th:nth-child(2),
+.sticky-table th:nth-child(3),
+.sticky-table th:nth-child(4) {
+    z-index: 2;
+    background: #356fa7 !important;
+}
+
+.sticky-table th:nth-child(1),
+.sticky-table th:nth-child(2),
+.sticky-table th:nth-child(3),
+.sticky-table th:nth-child(4) {
+    z-index: 2;
+    background: #97b8ce !important;
+}
+
+.sticky-table input[type=text] {
+    width: 90%;
+}
+
+.sticky-table tbody img {
+    width: 20px;
+    height: 20px;
+}
+
+.sticky-table tr.selected td {
+    background-color: #ffffcc;
+}
+
+/*====================*/
+
+.top {
+    margin-top: 10px;
+}
+
+.top button {
+    padding: 5px 10px;
+}
+
+.middle {
+    margin: 10px 0px;
+    background-color: transparent;
+    border: 1px solid rgb(68, 68, 68);
+    height: 600px;
+    overflow: auto;
+}
+
+.checkBox_block {
+    margin: auto;
+    width: 400px;
+    text-align: left;
+    padding: 30px 0px 20px 0px;
+}
+
+table.noborder-table {
+    width: 800px;
+    border: 0px;
+    float: left;
+}
+
+.noborder-table td {
+    border: 0px !important;
+    float: left;
+}
+
+table.noborder-block {
+    margin: auto;
+    width: 500px;
+    border: 0px;
+    padding: 0px;
+}
+
+.noborder-block td {
+    border: 0px !important;
+    float: left;
+}
+
+.disable_color {
+    color: #b3b3b3;
+}
+
+/*button*/
+.btn-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.btn-set {
+    cursor: pointer;
+    background: transparent !important;
+    color: rgb(0, 85, 182) !important;
+    font-size: 18px !important;
+    margin-left: 5px !important;
+    padding: 0px !important;
+}
+
+.btn-set:hover {
+    background: transparent !important;
+    color: rgb(0, 119, 255) !important;
+}
+
+/*test*/
+.progress {
+    top: 10px;
+    left: 45%;
+    position: absolute;
+    margin: auto;
+    width: auto;
+    height: auto;
+    display: none;
+    padding: 8px 12px;
+    border: 1px solid #3372b7;
+    border-radius: 5px;
+    background: rgba(255, 255, 255);
+    color: black;
+}

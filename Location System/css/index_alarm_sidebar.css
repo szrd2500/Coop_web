@@ -1,0 +1,139 @@
+.btn {
+    color: #ffffff;
+}
+
+.btn_change_focus {
+    background-color: #00b2df;
+}
+
+.btn_change_focus:hover {
+    background-color: #037e9c;
+}
+
+.btn_release_alarm {
+    background-color: #01b901;
+}
+
+.btn_release_alarm:hover {
+    background-color: #008800;
+}
+
+.alarm-sideBar {
+    position: fixed;
+    top: 0px;
+    left: -335px;
+    width: 335px;
+    height: 100%;
+    z-index: 2;
+    padding: 7px 0px 5px 25px;
+    border: 3px solid #e4e4e4;
+    box-shadow: 0px 0px 4px 2px rgb(123, 123, 123) inset;
+    -webkit-box-shadow: 0px 0px 4px 2px rgb(123, 123, 123) inset;
+    border-radius: 7px;
+    background: white;
+}
+
+.alarm-sideBar .sideBar-left {
+    position: fixed;
+    display: inline-block;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 300px;
+    height: 92%;
+}
+
+.sideBar-left-button {
+    display: block;
+    height: 40px;
+}
+
+.sideBar-left-button button {
+    height: 30px;
+    width: 282px;
+    background: transparent;
+}
+
+.sideBar-left-button button:hover,
+.sideBar-left-button button:focus {
+    background: transparent !important;
+}
+
+.sideBar-left-button i {
+    margin: auto;
+    color: black;
+}
+
+.thumbnail {
+    display: block;
+    background: #ff8484;
+    width: 280px;
+    /*height: 150px;*/
+    border-radius: 5px;
+    border: 1px solid white;
+}
+
+.thumbnail:hover {
+    box-shadow: 0px 0px 3px 2px rgb(105, 195, 255);
+    -webkit-transition: box-shadow .5s ease;
+    -o-transition: box-shadow .5s ease;
+    transition: box-shadow .5s ease;
+    /*cursor: pointer;*/
+}
+
+.thumbnail td {
+    border: none;
+}
+
+.thumbnail img {
+    background: white;
+    width: 100px;
+}
+
+.thumbnail label {
+    color: black;
+    margin: 0px;
+}
+
+/***************/
+
+.btn-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.btn-alarm {
+    padding: 5px 10px 5px 10px;
+    font-size: 16px;
+    color: rgb(233, 0, 0);
+    float: right;
+}
+
+.btn-alarm:hover {
+    color: rgb(184, 0, 0);
+}
+
+.drop-shadow {
+    -webkit-filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.7));
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.7));
+}
+
+.thumb-count {
+    float: right;
+    background: rgb(211, 38, 38);
+    border: 2px solid rgb(194, 38, 38);
+    border-radius: 50px;
+    box-shadow: 2px 2px 3px rgb(46, 46, 46);
+    padding: 0px 6px;
+    text-align: center;
+}
+
+.thumb-count label {
+    color: rgb(255, 255, 255);
+    margin: auto;
+}

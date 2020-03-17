@@ -1,225 +1,243 @@
-var anchorListArray = [],
-    count_anchor_list = 0;
+var anchorsInfoArray = [];
 
-function inputAnchorList(anchorList) {
-    anchorListArray = anchorList;
-    $("#table_main_anchor_list tbody").empty(); //先重置表格
-    $("#table_anchor_list tbody").empty();
-    count_anchor_list = 0;
-    for (var i = 0; i < anchorList.length; i++) {
-        count_anchor_list++;
-        var tr_id = "tr_anchor_list" + count_anchor_list;
-        if (anchorList[i].anchor_type == "main") {
-            $("#table_main_anchor_list tbody").append("<tr id=\"" + tr_id + "\"><td>" +
-                "<input type=\"text\" name=\"list_main_anchor_id\" value=\"" + anchorList[i].anchor_id + "\" style=\"max-width:100px;\" />" +
-                "</td><td>" +
-                "<input type=\"text\" name=\"list_main_anchor_x\" value=\"" + anchorList[i].set_x + "\" style=\"max-width:60px;\" />" +
-                "</td><td>" +
-                "<input type=\"text\" name=\"list_main_anchor_y\" value=\"" + anchorList[i].set_y + "\" style=\"max-width:60px;\" />" +
-                "</td><td>" +
-                "<input type=\"button\" value=\"Delete\" onclick=\"DeleteColumn(\'" + tr_id + "\')\" />" +
-                "</td></tr>");
+function importAnchorList() {
+    $("#anchor_id").on('change', function () {
+        //預設anchor_type為anchor
+        if ($(this).val().length > 0) {
+            var isExist = anchorsInfoArray.every(function (info) {
+                return $(this).val() != info.anchor_id;
+            });
+            if (isExist)
+                $("#anchor_id_alert").text($.i18n.prop('i_existed')).css('color', 'red');
+            else
+                $("#anchor_id_alert").text($.i18n.prop('i_canAdd')).css('color', 'green');
         } else {
-            $("#table_anchor_list tbody").append("<tr id=\"" + tr_id + "\"><td>" +
-                "<input type=\"text\" name=\"list_anchor_id\" value=\"" + anchorList[i].anchor_id + "\" style=\"max-width:100px;\" />" +
-                "</td><td>" +
-                "<input type=\"text\" name=\"list_anchor_x\" value=\"" + anchorList[i].set_x + "\" style=\"max-width:60px;\" />" +
-                "</td><td>" +
-                "<input type=\"text\" name=\"list_anchor_y\" value=\"" + anchorList[i].set_y + "\" style=\"max-width:60px;\" />" +
-                "</td><td>" +
-                "<input type=\"button\" value=\"Delete\" onclick=\"DeleteColumn(\'" + tr_id + "\')\" />" +
-                "</td></tr>");
+            $("#anchor_id_alert").empty();
         }
-    }
-}
+    });
 
-function DeleteColumn(id) {
-    $("#" + id).remove();
-}
-
-$(function () {
     var dialog, form,
-        main_id = $("input[name=list_main_anchor_id]"),
-        main_x = $("input[name=list_main_anchor_x]"),
-        main_y = $("input[name=list_main_anchor_y]"),
-        id = $("input[name=list_anchor_id]"),
-        x = $("input[name=list_anchor_x]"),
-        y = $("input[name=list_anchor_y]"),
-        allFields = $([]).add(main_id, main_x, main_y, id, x, y);
-    //tips = $( ".validateTips" );
+        anchor_type = $("#anchor_type"),
+        anchor_id = $("#anchor_id"),
+        allFields = $([]).add(anchor_id);
 
-    function SendResult() {
+    $("#btn_add_anchor_list").click(function () {
+        anchor_type.val("");
+        anchor_id.val("");
+        dialog.dialog("open");
+    });
+
+    $("#btn_delete_anchor_list").click(function () {
+        if (confirm($.i18n.prop('i_mapAlert_24'))) {
+            var chk_main_anc = document.getElementsByName("chkbox_main_anchor_list");
+            var chk_anc = document.getElementsByName("chkbox_anchor_list");
+            chk_main_anc.forEach(function (element) {
+                if (element.checked)
+                    deleteMainAnchor(element.value);
+            });
+            chk_anc.forEach(function (element) {
+                if (element.checked)
+                    deleteAnchor(element.value);
+            });
+        }
+    });
+
+    function submitAddAnchor() {
+        var valid = true;
         allFields.removeClass("ui-state-error");
-        var valid = true,
-            anchor_array = [],
-            count_total_anchors = 0;
-
-        for (i = 0; i < main_id.length; i++) {
-            valid = valid && checkLength(main_id.eq(i), "mapScale", 0, 5);
-            valid = valid && checkLength(main_x.eq(i), "mapScale", 0, 10);
-            valid = valid && checkLength(main_y.eq(i), "mapScale", 0, 10);
-            anchor_array.push({
-                "anchor_id": main_id.eq(i).val(),
-                "anchor_type": "main",
-                "set_x": main_x.eq(i).val(),
-                "set_y": main_y.eq(i).val()
-            });
-            count_total_anchors++
+        valid = valid && checkLength(anchor_id, $.i18n.prop('i_mapAlert_14'), 1, 5);
+        var isExist = anchorsInfoArray.findIndex(function (info) {
+            return info.anchor_id == anchor_id.val();
+        })
+        if (isExist > -1) {
+            valid = false;
+            anchor_id.addClass("ui-state-error");
+            alert($.i18n.prop('i_mapAlert_16'));
         }
-
-        for (j = 0; j < id.length; j++) {
-            valid = valid && checkLength(id.eq(i), "mapScale", 0, 5);
-            valid = valid && checkLength(x.eq(i), "mapScale", 0, 10);
-            valid = valid && checkLength(y.eq(i), "mapScale", 0, 10);
-            anchor_array.push({
-                "anchor_id": id.eq(i).val(),
-                "anchor_type": "",
-                "set_x": x.eq(i).val(),
-                "set_y": y.eq(i).val()
-            });
-            count_total_anchors++
-        }
-
-        var requestJSON = JSON.stringify({
-            "Command_Type": ["Write"],
-            "Command_Name": ["ClearListAnchor", "AddListAnchor"],
-            "Value": anchor_array
-        });
-
         if (valid) {
-            var xmlHttp = GetXmlHttpObject();
-            if (xmlHttp == null) {
-                alert("Browser does not support HTTP Request");
-                return;
-            }
+            var request = {
+                "Command_Type": ["Write"],
+                "Command_Name": ["AddListAnchor"],
+                "Value": [{
+                    "anchor_type": anchor_type.val(),
+                    "anchor_id": anchor_id.val()
+                }],
+                "api_token": [token]
+            };
+            var xmlHttp = createJsonXmlHttp("sql");
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
-                    var revInfo = revObj.Value;
-                    if (revObj.success > 0) {
-                        for (var i in revInfo) {
-                            text += "id:" + revInfo[i].anchor_id + "  type:" + revInfo[i].anchor_type +
-                                "  x:" + revInfo[i].set_x + "  y:" + revInfo[i].set_y + "\n";
-                        }
-                        alert("更新成功Anchor:" + revObj.success + "台,\n" +
-                            "更新失敗Anchor:" + (count_total_anchors - revObj.success));
-                        inputAnchorList(revInfo);
+                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                        getAllDataOfMap();
+                        dialog.dialog("close");
                     }
                 }
             };
-            xmlHttp.open("POST", "sql", true);
-            xmlHttp.setRequestHeader("Content-type", "application/json");
-            xmlHttp.send(requestJSON);
-            dialog.dialog("close");
+            xmlHttp.send(JSON.stringify(request));
         }
         return valid;
     }
 
-    /*********************在AnchorListDialog內的Add鈕按下後跳出輸入框***********************/
-    var dialog2;
-
-    function anchorListAdd() {
-        var form2,
-            anchor_id = $("#anchor_id"),
-            anchor_x = $("#anchor_x"),
-            anchor_y = $("#anchor_y"),
-            allFields2 = $([]).add(anchor_id).add(anchor_x).add(anchor_y);
-
-        function addAnchor() {
-            var valid = true;
-            allFields2.removeClass("ui-state-error");
-
-            var anchor_type = $("#anchor_type").children('option:selected');
-            valid = valid && checkLength(anchor_id, "Anchor ID", 0, 6);
-            valid = valid && checkLength(anchor_x, "Anchor X", 0, 10);
-            valid = valid && checkLength(anchor_y, "Anchor Y", 0, 10);
-
-            if (valid) {
-                count_anchor_list++;
-                var tr_id = "tr_anchor_list" + count_anchor_list;
-                if (anchor_type.val() == "main") {
-                    $("#table_main_anchor_list tbody").append("<tr><td>" +
-                        "<input type=\"text\" name=\"list_main_anchor_id\" value=\"" + anchor_id.val() + "\" style=\"max-width:100px;\" />" +
-                        "</td><td>" +
-                        "<input type=\"text\" name=\"list_main_anchor_x\" value=\"" + anchor_x.val() + "\" style=\"max-width:60px;\" />" +
-                        "</td><td>" +
-                        "<input type=\"text\" name=\"list_main_anchor_y\" value=\"" + anchor_y.val() + "\" style=\"max-width:60px;\" />" +
-                        "</td><td>" +
-                        "<input type=\"button\" value=\"Delete\" onclick=\"DeleteColumn(\'" + tr_id + "\')\" />" +
-                        "</td></tr>");
-                } else {
-                    $("#table_anchor_list tbody").append("<tr><td>" +
-                        "<input type=\"text\" name=\"list_anchor_id\" value=\"" + anchor_id.val() + "\" style=\"max-width:100px;\" />" +
-                        "</td><td>" +
-                        "<input type=\"text\" name=\"list_anchor_x\" value=\"" + anchor_x.val() + "\" style=\"max-width:60px;\" />" +
-                        "</td><td>" +
-                        "<input type=\"text\" name=\"list_anchor_y\" value=\"" + anchor_y.val() + "\" style=\"max-width:60px;\" />" +
-                        "</td><td>" +
-                        "<input type=\"button\" value=\"Delete\" onclick=\"DeleteColumn(\'" + tr_id + "\')\" />" +
-                        "</td></tr>");
-                }
-                dialog2.dialog("close");
-            }
-            return valid;
-        }
-
-        dialog2 = $("#dialog_add_new_anchor").dialog({
-            autoOpen: false,
-            height: 340,
-            width: 340,
-            modal: true,
-            buttons: {
-                Cancel: function () {
-                    dialog2.dialog("close");
-                },
-                "Confirm": addAnchor
-            },
-            close: function () {
-                form2[0].reset();
-                allFields2.removeClass("ui-state-error");
-            }
-        });
-
-        form2 = dialog2.find("form").on("submit", function (event) {
-            event.preventDefault();
-            addAnchor();
-        });
-    }
-
-    anchorListAdd(); //必須先呼叫一次新增Anchor的function，否則輸入框會沒有套用設定而顯示出來
-    /**************************************************************************************/
-
-    dialog = $("#dialog_anchor_list").dialog({
+    dialog = $("#dialog_add_new_anchor").dialog({
         autoOpen: false,
-        height: 500,
-        width: 400,
+        height: 450,
+        width: 340,
         modal: true,
         buttons: {
-            "Add": function () {
-                anchorListAdd();
-                dialog2.dialog("open");
-            },
-            "Confirm": SendResult,
+            "Confirm": submitAddAnchor,
             Cancel: function () {
-                form[0].reset();
-                allFields.removeClass("ui-state-error");
-                inputAnchorList(anchorListArray);
                 dialog.dialog("close");
             }
         },
         close: function () {
             form[0].reset();
             allFields.removeClass("ui-state-error");
-            inputAnchorList(anchorListArray);
         }
     });
 
     form = dialog.find("form").on("submit", function (event) {
         event.preventDefault();
-        SendResult();
+        submitAddAnchor();
     });
+}
 
-    $("#Anchor_List").button().on("click", function () {
-        dialog.dialog("open");
-    });
-});
+function getAnchorList() {
+    var requestArray = {
+        "Command_Type": ["Read"],
+        "Command_Name": ["GetAnchors"],
+        "api_token": [token]
+    };
+    var xmlHttp = createJsonXmlHttp("sql");
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+            getAnchor_Group();
+            var revObj = JSON.parse(this.responseText);
+            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                anchorsInfoArray = revObj.Value[0].Values.slice(0); //利用抽離全部陣列完成陣列拷貝
+                $("#table_main_anchor_list tbody").empty();
+                $("#table_anchor_list tbody").empty();
+                var count_main_anchor_list = 0;
+                var count_anchor_list = 0;
+                for (var i = 0; i < anchorsInfoArray.length; i++) {
+                    if (anchorsInfoArray[i].anchor_type == "main") {
+                        count_main_anchor_list++;
+                        var tr_id = "tr_main_anchor_list_" + count_main_anchor_list;
+                        $("#table_main_anchor_list tbody").append("<tr id=\"" + tr_id + "\">" +
+                            "<td><input type=\"checkbox\" name=\"chkbox_main_anchor_list\" value=\"" +
+                            anchorsInfoArray[i].anchor_id + "\" onchange=\"selectColumn(\'" + tr_id + "\')\" /> " +
+                            count_main_anchor_list + "</td>" +
+                            "<td><input type=\"text\" name=\"list_main_anchor_id\" value=\"" +
+                            anchorsInfoArray[i].anchor_id + "\" style=\"max-width:60px;\" readonly/></td></tr>");
+                    } else {
+                        count_anchor_list++;
+                        var tr_id = "tr_anchor_list_" + count_anchor_list;
+                        $("#table_anchor_list tbody").append("<tr id=\"" + tr_id + "\">" +
+                            "<td><input type=\"checkbox\" name=\"chkbox_anchor_list\" value=\"" +
+                            anchorsInfoArray[i].anchor_id + "\" onchange=\"selectColumn(\'" + tr_id + "\')\" /> " +
+                            count_anchor_list + "</td>" +
+                            "<td><input type=\"text\" name=\"list_anchor_id\" value=\"" +
+                            anchorsInfoArray[i].anchor_id + "\" style=\"max-width:60px;\" readonly/></td></tr>");
+                    }
+                }
+            } else {
+                alert($.i18n.prop('i_mapAlert_25'));
+            }
+        }
+    };
+    xmlHttp.send(JSON.stringify(requestArray));
+}
+
+function deleteMainAnchor(id) {
+    var request = {
+        "Command_Type": ["Read"],
+        "Command_Name": ["DeleteAnchor_Info"],
+        "Value": [{
+            "anchor_id": id
+        }],
+        "api_token": [token]
+    };
+    var xmlHttp = createJsonXmlHttp("sql");
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+            var revObj = JSON.parse(this.responseText);
+            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                var requestArray = {
+                    "Command_Type": ["Read"],
+                    "Command_Name": ["GetGroups"],
+                    "api_token": [token]
+                };
+                var getXmlHttp = createJsonXmlHttp("sql");
+                getXmlHttp.onreadystatechange = function () {
+                    if (getXmlHttp.readyState == 4 || getXmlHttp.readyState == "complete") {
+                        var revObj2 = JSON.parse(this.responseText);
+                        if (checkTokenAlive(token, revObj2) && revObj2.Value[0].success > 0) {
+                            var deleteArray = [];
+                            var revInfo = revObj2.Value[0].Values || [];
+                            revInfo.forEach(function (element) {
+                                if (element.main_anchor_id == id) {
+                                    deleteArray.push({
+                                        "group_id": element.group_id
+                                    });
+                                }
+                            });
+                            if (deleteArray.length > 0)
+                                DeleteGroupInfo(deleteArray);
+                            else
+                                getAllDataOfMap();
+                        }
+                    }
+                };
+                getXmlHttp.send(JSON.stringify(requestArray));
+            }
+        }
+    };
+    xmlHttp.send(JSON.stringify(request));
+}
+
+function deleteAnchor(id) {
+    var request = {
+        "Command_Type": ["Read"],
+        "Command_Name": ["DeleteAnchor_Info"],
+        "Value": [{
+            "anchor_id": id
+        }],
+        "api_token": [token]
+    };
+    var xmlHttp = createJsonXmlHttp("sql");
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+            var revObj = JSON.parse(this.responseText);
+            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                var gerRequest = {
+                    "Command_Type": ["Read"],
+                    "Command_Name": ["GetGroup_Anchors"],
+                    "api_token": [token]
+                };
+                var getXmlHttp = createJsonXmlHttp("sql");
+                getXmlHttp.onreadystatechange = function () {
+                    if (getXmlHttp.readyState == 4 || getXmlHttp.readyState == "complete") {
+                        var revObj2 = JSON.parse(this.responseText);
+                        if (checkTokenAlive(token, revObj2) && revObj2.Value[0].success > 0) {
+                            var deleteArr = [];
+                            var revInfo = revObj2.Value[0].Values || [];
+                            revInfo.forEach(function (element) {
+                                if (element.anchor_id == id)
+                                    deleteArr.push({
+                                        "group_id": element.group_id,
+                                        "anchor_id": element.anchor_id
+                                    });
+                            });
+                            if (deleteArr.length > 0)
+                                DeleteGroup_Anchor(deleteArr);
+                            else
+                                getAllDataOfMap();
+                        }
+                    }
+                };
+                getXmlHttp.send(JSON.stringify(gerRequest));
+            }
+        }
+    };
+    xmlHttp.send(JSON.stringify(request));
+}

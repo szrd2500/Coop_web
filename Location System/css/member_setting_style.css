@@ -1,0 +1,295 @@
+th,
+td {
+    padding: 8px;
+    text-align: left;
+    font-weight: bold;
+    font-family: 'Microsoft JhengHei', 'sans-serif';
+}
+
+label {
+    font-weight: bold;
+    font-family: 'Microsoft JhengHei', 'sans-serif';
+}
+
+p {
+    padding: 2px 0px 2px 0px;
+}
+
+input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.btn-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.btn-edit {
+    font-size: 8em;
+    padding: 3px 7px;
+    margin: 0px;
+}
+
+.custom-file-selected {
+    display: inline-block;
+    cursor: pointer;
+    color: #dddddd;
+    text-decoration: none;
+    font-family: Sans-serif;
+    padding: 10px 15px 10px 50px;
+}
+
+/* Tag Setting Css */
+
+.top {
+    text-align: center;
+    margin: 30px;
+}
+
+.block {
+    border: 1px solid lightblue;
+    padding: 10px;
+}
+
+.block th,
+.block td {
+    border: none;
+}
+
+.noborder-block {
+    border: none;
+    padding: 0px;
+}
+
+.noborder-block th,
+.noborder-block td {
+    border: none;
+}
+
+.thumb-block {
+    height: 120px;
+    width: 220px;
+    max-height: 120px;
+    max-width: 220px;
+    text-align: center;
+    background: white;
+    margin-bottom: 10px;
+}
+
+#main_picture {
+    width: 100%;
+    background-color: rgb(59, 93, 121);
+    padding: 10px;
+    border-radius: 3px;
+}
+
+.image-btn {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0px;
+}
+
+.custom-file-download {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.pagination {
+    margin: 0px;
+}
+
+.pagination input {
+    height: 18px;
+    font-size: 12px;
+}
+
+.pagination li a,
+.pagination li a:hover {
+    font-weight: bold;
+    background-color: rgb(1, 79, 131);
+    color: rgb(37, 37, 37);
+}
+
+.page-btn {
+    background-color: rgb(1, 79, 131) !important;
+}
+
+.page-btn:hover {
+    background-color: #b0d5ff !important;
+}
+
+.changeBgColor {
+    background-color: rgb(187, 234, 250);
+}
+
+/* Display Setting Css */
+
+.load-file {
+    /*border: 1px solid rgb(44, 64, 80);*/
+    cursor: pointer;
+    background-color: rgb(104, 179, 123);
+    padding: 5px 12px 7px 12px;
+    border-radius: 3px;
+    color: rgb(255, 255, 255);
+    margin: 0px;
+    font-weight: normal;
+    font-size: 12px;
+    border: 1px solid rgb(95, 155, 110);
+}
+
+.load-file:hover {
+    background-color: rgb(95, 155, 110);
+}
+
+.draw-map {
+    height: 175px;
+    width: 350px;
+    background: lightgray;
+    border: 1px solid lightgray;
+    margin-top: 10px;
+}
+
+.draw-position {
+    height: 180px;
+    width: 100%;
+    border: 1px solid lightgray;
+}
+
+.palette {
+    text-indent: -999px;
+}
+
+.btn {
+    margin: 5px 0px 5px 0px;
+    font-size: 12px;
+}
+
+/* Member Setting Css */
+
+.table-line {
+    margin-top: 10px;
+}
+
+.table-line thead tr {
+    background: rgb(104, 104, 104);
+}
+
+.table-line th {
+    border: 1px solid rgb(2, 2, 2);
+    padding: 3px 8px;
+    text-align: center;
+    font-size: 14px;
+    color: white
+}
+
+.table-line td {
+    border: 1px solid rgb(2, 2, 2);
+    padding: 3px 8px;
+    text-decoration: none;
+    text-align: left;
+    font-size: 14px;
+    background-color: rgb(216, 216, 216);
+}
+
+.member_list {
+    height: auto;
+    width: 100%;
+    overflow: auto;
+    margin-right: 0px;
+    background-color: transparent;
+    border: 1px solid rgb(0, 65, 117);
+}
+
+/**
+ * sticky-table
+**/
+
+table.sticky-table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+    text-align: left;
+}
+
+.sticky-table th {
+    width: 150px;
+    color: white;
+}
+
+.sticky-table td {
+    color: black;
+}
+
+.sticky-table th,
+.sticky-table td {
+    padding: 1px 5px;
+    text-align: center;
+    background: #f2f2f2;
+    outline: 2px solid rgb(0, 65, 117);
+    outline-offset: -1px;
+}
+
+.sticky-table th:nth-child(1),
+.sticky-table td:nth-child(1) {
+    width: 65px;
+    cursor: pointer;
+    padding-left: 6px !important;
+}
+
+.sticky-table th:nth-child(1) input,
+.sticky-table th:nth-child(1) label,
+.sticky-table td:nth-child(1) input,
+.sticky-table td:nth-child(1) label {
+    cursor: pointer;
+}
+
+.sticky-table thead tr:nth-child(1) th {
+    top: 0px;
+    position: sticky;
+    position: -webkit-sticky;
+    background: rgb(0, 104, 173);
+    outline: 2px solid rgb(0, 65, 117);
+    outline-offset: -1px;
+}
+
+tr.selected td {
+    background-color: #ffffba;
+}
+
+.sticky-table input[type=text] {
+    width: 90%;
+}
+
+.sticky-table tbody img {
+    width: 20px;
+    height: 20px;
+}
+
+/* icon navbar */
+.sidebar ul .setting-type a {
+    background: transparent
+}
+
+.sidebar ul .setting-type:hover a,
+.sidebar ul .setting-type.active a,
+.sidebar ul .setting-type.active:hover a {
+    background: rgb(135, 145, 160);
+}
