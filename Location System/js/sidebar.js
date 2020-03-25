@@ -39,59 +39,99 @@ function tagSidebarMove() {
     });
 }
 
-
-
 /**
  * About Alarm Data Setting
  */
-function inputAlarmData(element, index) {
-    /**
-     * Alarm Card DOM => {
-     * thumb_id = "alarmCard_" + index,
-     * thumb_img = "alarmCard_img_" + index,
-     * thumb_number = "alarmCard_number_" + index,
-     * thumb_focus_btn_id = "alarmCard_focus_btn_" + index,
-     * thumb_unlock_btn_id = "alarmCard_unlock_btn_" + index,
-     * tagid_alarm = element.id + element.alarm_type; //used by count & date & time 
-     * }
-     */
-    var obj = element;
-    obj["index"] = index;
-    obj["time_arr"] = TimeToArray(element.alarm_time);
+function inputAlarmData(element, i) {
+    /* Alarm Card */
+    var color = "",
+        status = "",
+        time_arr = TimeToArray(element.alarm_time),
+        thumb_id = "alarmCard_" + i,
+        thumb_img = "alarmCard_img_" + i,
+        thumb_number = "alarmCard_number_" + i,
+        thumb_unlock_btn_id = "alarmCard_unlock_btn_" + i,
+        thumb_focus_btn_id = "alarmCard_focus_btn_" + i,
+        tagid_alarm = element.id + element.alarm_type; //used by count & date & time 
     switch (element.alarm_type) {
         case "low_power":
-            obj["color"] = "#72ac1b";
-            obj["status"] = 'i_lowPowerAlarm';
+            color = "#72ac1b";
+            status = $.i18n.prop('i_lowPowerAlarm');
             break;
         case "help":
-            obj["color"] = "#ff8484";
-            obj["status"] = 'i_helpAlarm';
+            color = "#ff8484";
+            status = $.i18n.prop('i_helpAlarm');
             break;
         case "still":
-            obj["color"] = "#FF6600";
-            obj["status"] = 'i_stillAlarm';
+            color = "#FF6600";
+            status = $.i18n.prop('i_stillAlarm');
             break;
         case "active":
-            obj["color"] = "#FF6600";
-            obj["status"] = 'i_activeAlarm';
+            color = "#FF6600";
+            status = $.i18n.prop('i_activeAlarm');
             break;
         case "Fence":
-            obj["color"] = '#ffae00';
-            obj["status"] = 'i_electronicFence';
+            color = '#ffae00'; // '#ffe600';
+            status = $.i18n.prop('i_electronicFence');
             break;
         case "stay":
-            obj["color"] = '#4876ff';
-            obj["status"] = 'i_stayAlarm';
+            color = '#4876ff';
+            status = $.i18n.prop('i_stayAlarm');
             break;
         case "hidden":
-            obj["color"] = '#6f6ff8';
-            obj["status"] = 'i_hiddenAlarm';
+            color = '#6f6ff8';
+            status = $.i18n.prop('i_hiddenAlarm');
             break;
         default:
-            obj["color"] = "#FFFFFF"; //unknown
-            obj["status"] = '';
-    }
-    return obj;
+            color = "#FFFFFF"; //unknown
+            status = "";
+    };
+    var html = "<div class=\"thumbnail\" id=\"" + thumb_id + "\" style=\"background:" + color + "\">" +
+        "<div class=\"thumb-count\"><label id=\"count_" + tagid_alarm + "\">" + element.count + "</label></div>" +
+        "<table><tr><td>" +
+        "<img id=\"" + thumb_img + "\" class=\"member_photo\" src=\"\">" +
+        "</td><td>" +
+        "<label>" + $.i18n.prop('i_number') + " : " +
+        "<span id=\"" + thumb_number + "\">" + element.number + "</span></label><br>" +
+        "<label>" + $.i18n.prop('i_name') + " : " + element.name + "</label><br>" +
+        "<label>" + $.i18n.prop('i_userID') + " : " + element.user_id + "</label><br>" +
+        "<label>" + $.i18n.prop('i_date') + " : <span id=\"date_" + tagid_alarm + "\">" + time_arr[0] + "</span></label>" +
+        "<br>" +
+        "<label>" + $.i18n.prop('i_time') + " : <span id=\"time_" + tagid_alarm + "\">" + time_arr[1] + "</span></label>" +
+        "</td></tr></table>" +
+        "<label style=\"margin-left:10px; color:white;\">" + $.i18n.prop('i_status') + " : " + status + "</label>" +
+        "<br><div style=\"text-align:center; margin:5px;\">" +
+        "<button type=\"button\" id=\"" + thumb_unlock_btn_id + "\"" +
+        " class=\"btn btn-default\" title=\"" + $.i18n.prop('i_completed') + "\">" +
+        "<img class=\"icon-image\" src=\"../image/complete.png\"></button>" +
+        "<button type=\"button\" id=\"\" style=\"margin-left: 10px;\"" +
+        " class=\"btn btn-default\" title=\"" + $.i18n.prop('i_releasePosition') + "\"" +
+        " onclick=\"unlockFocusAlarm()\"><img class=\"icon-image\"" +
+        " src=\"../image/release_position.png\"></button>" +
+        "<button type=\"button\" id=\"" + thumb_focus_btn_id + "\" style=\"margin-left: 10px;\"" +
+        " class=\"btn btn-default\" title=\"" + $.i18n.prop('i_locate') + "\">" +
+        "<img class=\"icon-image\" src=\"../image/target.png\"></button>" +
+        "</div></div>";
+
+    if ($("#btn_sort_alarm i").hasClass("fa-sort-amount-up"))
+        $(".thumbnail_columns").prepend(html);
+    else
+        $(".thumbnail_columns").append(html);
+
+    setMemberPhoto(thumb_img, thumb_number, element.number);
+    $("#" + thumb_unlock_btn_id).on("click", function () {
+        if (confirm("是否記錄此事件已處理?\n(若未解除警報原因，警報將會再次發出，請確實完成!)")) {
+            releaseFocusAlarm(element.id, element.alarm_type);
+            $("#" + thumb_id).hide(); //警告卡片會消失
+            changeAlarmLight();
+        }
+    });
+    $("#" + thumb_focus_btn_id).on("click", function () {
+        changeFocusAlarm(element.id, element.alarm_type);
+        changeAlarmLight();
+    });
+    /*  Alarm Dialog */
+    setAlarmDialog(element);
 }
 
 function setAlarmDialog(Obj) {
@@ -116,7 +156,7 @@ function setAlarmDialog(Obj) {
             status = $.i18n.prop('i_activeAlarm');
             break;
         case "Fence":
-            color = '#ffae00';
+            color = '#ffae00'; // '#ffe600';
             status = $.i18n.prop('i_electronicFence');
             break;
         case "stay":
@@ -161,7 +201,7 @@ function setTagDialog(Obj) {
 
 function setMemberPhoto(img_id, number_id, number) {
     if (number == "") {
-        document.getElementById(img_id).setAttribute("src", noImagePng);
+        $("#" + img_id).attr('src', noImagePng);
     } else {
         var json_request = JSON.stringify({
             "Command_Type": ["Read"],
@@ -175,12 +215,10 @@ function setMemberPhoto(img_id, number_id, number) {
         jxh.onreadystatechange = function () {
             if (jxh.readyState == 4 || jxh.readyState == "complete") {
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0 && revObj.Value[0].Values) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0 && revObj.Value[0].Values) {
                     var revInfo = revObj.Value[0].Values[0];
-                    if (document.getElementById(number_id).innerText != number) {
-                        document.getElementById(img_id).setAttribute("src", noImagePng);
+                    if (document.getElementById(number_id).innerText != number)
                         return;
-                    }
                     if (revInfo.file_ext != "" && revInfo.photo != "")
                         document.getElementById(img_id).setAttribute("src", "data:image/" + revInfo.file_ext + ";base64," + revInfo.photo);
                     else

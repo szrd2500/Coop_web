@@ -1,6 +1,5 @@
 'use strict';
-var token = "",
-    mapList = {},
+var mapList = {},
     memberList = {},
     timeDelay = {},
     selectMembers = {},
@@ -10,14 +9,9 @@ var token = "",
 
 
 $(function () {
-    token = getToken();
-    /*
-     * Check this page's permission and load navbar
-     */
-    if (!getPermissionOfPage("Report")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    /* Check this page's permission and load navbar */
+    loadUserData();
+    checkPermissionOfPage("Report");
     setNavBar("Report", "");
 
     getMap();
@@ -183,7 +177,7 @@ function getDepts() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                 $("#search_dept").val("<option value=\"\">All</option>");
                 revObj.Value[0].Values.forEach(function (element) {
                     $("#search_dept").append("<option value=\"" + element.c_id + "\">" + element.children + "</option>");
@@ -240,7 +234,7 @@ function getMap() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                 $("#target_map").empty();
                 revObj.Value[0].Values.forEach(function (element) {
                     //mapList => key: map_id | value: {map_id, map_name, map_src, map_scale}
@@ -312,7 +306,7 @@ function getPersonTimeline(number) {
                             return;
                         }
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                             var revInfo = revObj.Value[0].location || [{
                                 "Status": "0"
                             }];
@@ -355,7 +349,7 @@ function getPersonTimeline(number) {
                             return;
                         }
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                             var location = revObj.Value[0].location || [{
                                 "Status": "0"
                             }];
@@ -538,7 +532,7 @@ function getAttendanceList() {
                     return;
                 }
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                     var revInfo = revObj.Value[0].Values || [],
                         tag_id = revObj.Value[0].tag_id;
                     revInfo.forEach(function (timeline) {

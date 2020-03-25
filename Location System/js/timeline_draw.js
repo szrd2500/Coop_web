@@ -153,7 +153,7 @@ function checkInTagsRange(p) {
     };
     switch ($("#target_type").val()) {
         case "Tag":
-            document.getElementsByName("chk_target_id").forEach(function (tag_id) {
+            document.getElementsByName("chk_target_id").forEach(function(tag_id ) {
                 var array = HistoryData[tag_id.value];
                 for (var i = 0; i < times; i++) {
                     if (typeof (array[i].x) == 'undefined') return;
@@ -168,7 +168,7 @@ function checkInTagsRange(p) {
             if (!document.getElementById("chk_is_overlap").checked && times > 0)
                 start = times - 1;
             for (var i = start; i < times; i++) {
-                HistoryData[timeslot_array[i]].forEach(function (info) {
+                HistoryData[timeslot_array[i]].forEach(function(info ) {
                     if (typeof (info.x) == 'undefined') return;
                     if (Math.pow(radius.tag, 2) >= Math.pow(info.x - p.x, 2) + Math.pow(info.y - p.y, 2))
                         inputThumbInfos(parseInt(info.tag_id.substring(8), 16), info);
@@ -180,7 +180,7 @@ function checkInTagsRange(p) {
             return false;
     }
     if (document.getElementById("chk_diaplay_alarm").checked) {
-        displayAlarms.forEach(function (alarm) {
+        displayAlarms.forEach(function(alarm) {
             if (Math.pow(radius.alarm, 2) >= Math.pow(alarm.x - p.x, 2) + Math.pow(alarm.y - (p.y - radius.alarm * 2), 2))
                 inputThumbInfos(alarm.user_id, alarm);
         });
@@ -200,17 +200,17 @@ function setMobileEvents() {
     hammer_pinch.get('pinch').set({
         enable: true
     });
-    hammer_pan.on('panstart', function (ev) {
+    hammer_pan.on('panstart', function(ev ) {
         panPos.canvasLeft = parseInt(canvas.style.marginLeft);
         panPos.canvasTop = parseInt(canvas.style.marginTop);
     });
-    hammer_pan.on('panmove', function (ev) {
+    hammer_pan.on('panmove', function(ev ) {
         xleftView = panPos.canvasLeft + ev.deltaX;
         ytopView = panPos.canvasTop + ev.deltaY;
         canvas.style.marginLeft = xleftView + "px";
         canvas.style.marginTop = ytopView + "px";
     });
-    hammer_pinch.on('pinchstart pinchmove', function (ev) {
+    hammer_pinch.on('pinchstart pinchmove', function(ev ) {
         var BCR = canvas.getBoundingClientRect(),
             pos_x = ev.center.x - BCR.left,
             pos_y = ev.center.y - BCR.top,
@@ -364,7 +364,7 @@ function drawNextTimeByTag() {
         });
         document.getElementById("current_tags_amount").innerText = count;
         if (document.getElementById("chk_diaplay_alarm").checked) {
-            displayAlarms.forEach(function (alarm) {
+            displayAlarms.forEach(function(alarm) {
                 drawAlarmTag(ctx, "", alarm.x, canvasImg.height - alarm.y, alarm.alarm_type);
             });
         }
@@ -471,7 +471,7 @@ function reDrawTag() {
                 }
             });
             if (document.getElementById("chk_diaplay_alarm").checked) {
-                displayAlarms.forEach(function (alarm) {
+                displayAlarms.forEach(function(alarm ) {
                     if ((chkUseInputMap.checked && inputMapSrc.length > 0) || (alarm.map_id == locate_map))
                         drawAlarmTag(ctx, "", alarm.x, canvasImg.height - alarm.y, alarm.alarm_type);
                 });
@@ -484,7 +484,7 @@ function reDrawTag() {
             if (!document.getElementById("chk_is_overlap").checked && times > 0)
                 start = times - 1;
             for (var i = start; i < times; i++) {
-                HistoryData[timeslot_array[i]].forEach(function (info) {
+                HistoryData[timeslot_array[i]].forEach(function(info) {
                     if (info.tag_id == locate_tag) {
                         locate_arr.push(info);
                     } else {
@@ -504,11 +504,11 @@ function reDrawTag() {
                     }
                 });
             }
-            locate_arr.forEach(function (info) {
+            locate_arr.forEach(function(info ){
                 drawTag(ctx, info.time, info.x, canvasImg.height - info.y, locateColor);
             });
             if (document.getElementById("chk_diaplay_alarm").checked) {
-                displayAlarms.forEach(function (alarm) {
+                displayAlarms.forEach(function(alarm) {
                     drawAlarmTag(ctx, "", alarm.x, canvasImg.height - alarm.y, alarm.alarm_type);
                 });
             }
@@ -523,18 +523,11 @@ function reDrawTag() {
 }
 
 function displayAlarmPos(key1, key2) {
-    var alarm, user_id, date_time;
-    if (HistoryData["search_type"] == "Tag") {
-        alarm = AlarmList[key1][key2];
-        user_id = parseInt(key1, 16);
-        date_time = key2.split(" ");
-    } else {
-        alarm = AlarmList[key2][key1];
-        user_id = parseInt(key2.substring(8), 16);
-        date_time = key1.split(" ");
-    }
+    var alarm = AlarmList[key1][key2],
+        tag_id = HistoryData["search_type"] == "Tag" ? key1 : key2.substring(8),
+        date_time = HistoryData["search_type"] == "Tag" ? key2.split(" ") : key1.split(" ");
     posAlarmData = {
-        user_id: user_id,
+        user_id: parseInt(tag_id, 16),
         date: date_time[0],
         time: date_time[1],
         alarm_type: alarm.alarm_type,

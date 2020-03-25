@@ -13,6 +13,48 @@ $(function () {
     $("#btn_account_add").on('click', newAccountInfo);
     $("#btn_account_delete").on('click', deleteAccountInfo);
 
+    //Dialog to edit the permission.
+    /*
+    $("input[name='chkbox_permission']").on('change', changeCheck)
+
+    $("#table_permission tr").on('click', showDialog_permission);
+
+    resetPermissionTable();
+    
+    var dialog, form,
+        permission_name = $("#permission_name"),
+        allFields = $([]).add(permission_name);
+    var SendResult = function () {
+        allFields.removeClass("ui-state-error");
+        var valid = true && checkLength(permission_name, $.i18n.prop('i_alertError_10'), 1, 20);
+        if (valid) {
+            dialog.dialog("close");
+        }
+        return valid;
+    };
+    dialog = $("#dialog_permission_setting").dialog({
+        autoOpen: false,
+        height: 600,
+        width: 600,
+        modal: true,
+        buttons: {
+            "Confirm": SendResult,
+            Cancel: function () {
+                form[0].reset();
+                allFields.removeClass("ui-state-error");
+                dialog.dialog("close");
+            }
+        },
+        close: function () {
+            form[0].reset();
+            allFields.removeClass("ui-state-error");
+        }
+    });
+    form = dialog.find("form").on("submit", function (event) {
+        event.preventDefault();
+        SendResult();
+    });*/
+
     //Dialog to edit the account.
     var dialog2, form2,
         account = $("#edit_account"),
@@ -43,7 +85,7 @@ $(function () {
             xmlHttp2.onreadystatechange = function () {
                 if (xmlHttp2.readyState == 4 || xmlHttp2.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                         dialog2.dialog("close");
                         inputUsersTable();
                     }
@@ -81,19 +123,45 @@ $(function () {
 });
 
 function inputPermissionTable() {
-    var page_permission = getPermission()
     $("#table_permission tbody").empty();
-    page_permission.forEach(function(element){
-        var level = element.permission;
-        if (level == "2")
-            level = 'i_high';
-        else if (level == "1")
-            level = 'i_mid';
+    /* page_permission */
+    [{
+        page_name: 'homePage',
+        permission: MinimumPermission["index"]
+    }, {
+        page_name: 'member_settingPage',
+        permission: MinimumPermission["Member_Setting"]
+    }, {
+        page_name: 'timelinePage',
+        permission: MinimumPermission["Timeline"]
+    }, {
+        page_name: 'map_settingPage',
+        permission: MinimumPermission["Map_Setting"]
+    }, {
+        page_name: 'anchor_settingPage',
+        permission: MinimumPermission["Anchor_Setting"]
+    }, {
+        page_name: 'alarm_settingPage',
+        permission: MinimumPermission["Alarm_Setting"]
+    }, {
+        page_name: 'report',
+        permission: MinimumPermission["Report"]
+    }, {
+        page_name: 'advance_settingPage',
+        permission: MinimumPermission["Reference"]
+    }, {
+        page_name: 'account_managementPage',
+        permission: MinimumPermission["Account_Management"]
+    }].forEach(function (element) {
+        if (element.permission == "2")
+            element.permission = 'i_high';
+        else if (element.permission == "1")
+            element.permission = 'i_mid';
         else
-            level = 'i_low';
+            element.permission = 'i_low';
         $("#table_permission tbody").append("<tr>" +
-            "<td class=\"i18n\" name=\"" + element.page_name + "\"></td>" +
-            "<td class=\"i18n\" name=\"" + level + "\"></td>" +
+            "<td class=\"i18n\" name=\"" + element.page_name + "\">" + $.i18n.prop(element.page_name) + "</td>" +
+            "<td class=\"i18n\" name=\"" + element.permission + "\">" + $.i18n.prop(element.permission) + "</td>" +
             "<tr>");
     });
 }
@@ -107,7 +175,7 @@ function inputUsersTable() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].accountNum > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].accountNum > 0) {
                 var revInfo = revObj.Value[0].Values || [];
                 $("#table_account tbody").empty();
                 userArray = [];
@@ -134,6 +202,12 @@ function inputUsersTable() {
     };
     xmlHttp.send(JSON.stringify(request));
 }
+
+/*function showDialog_permission() {
+    var permission = this.cells[0].childNodes[0].textContent;
+    document.getElementById("permission_name").value = permission;
+    $("#dialog_permission_setting").dialog("open");
+}*/
 
 function editAccountInfo() {
     CommandName_account = "EditAccount_Info";
@@ -185,7 +259,7 @@ function deleteAccountInfo() {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                         inputUsersTable();
                     }
                 }
@@ -196,3 +270,31 @@ function deleteAccountInfo() {
         alert($.i18n.prop('i_permissionAlert_2'));
     }
 }
+
+
+/*function changeCheck() {
+    var radio = document.getElementsByName(this.value);
+    if (this.checked) {
+        radio.forEach(function(element) {
+            element.disabled = false;
+        });
+        radio[0].checked = true;
+    } else {
+        radio.forEach(function(element) {
+            element.disabled = true;
+            element.checked = false;
+        });
+    }
+}
+
+function resetPermissionTable() {
+    var checkBoxs = document.getElementsByName("chkbox_permission");
+    for (var i = 0; i < checkBoxs.length; i++) {
+        var radio = document.getElementsByName(checkBoxs[i].value);
+        checkBoxs[i].checked = false;
+        radio.forEach(function(element) {
+            element.disabled = true;
+            element.checked = false;
+        });
+    }
+}*/

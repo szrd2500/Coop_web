@@ -79,7 +79,7 @@ function excelImportTable(jsonData) {
         getXmlHttp.onreadystatechange = function () {
             if (getXmlHttp.readyState == 4 || getXmlHttp.readyState == "complete") {
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                     var memberArray = revObj.Value[0].Values || [],
                         dataArray = JSON.parse(jsonData) || [];
                     dataArray.forEach(function (element, index) {
@@ -243,7 +243,7 @@ function excelImportTable(jsonData) {
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                     submitNumber.splice(submitNumber.indexOf(number), 1);
                     if (operate == "AddStaff")
                         successNumber.add.push(number);
@@ -282,7 +282,7 @@ function deleteMemberData(number_array) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 return;
             }
         }

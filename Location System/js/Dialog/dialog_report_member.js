@@ -228,7 +228,7 @@ function setMembersDialog() {
         jxh.onreadystatechange = function () {
             if (jxh.readyState == 4 || jxh.readyState == "complete") {
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                     var revInfo = revObj.Value[0].Values || [];
                     $("#search_member_list tbody").empty();
                     revInfo.forEach(function (member, i) {
@@ -294,14 +294,12 @@ function setDisplayRowsDialog() {
         var chk_display_rows = document.getElementsByName("chk_display_rows"),
             chk_person_data = document.getElementsByName("chk_person_data"),
             tr_member_attendance = "",
-            tr_person_timeline = "",
-            title_arr = [];
-        //set Attendance Title
+            tr_person_timeline = "";
+
         for (var i = 0; i < chk_display_rows.length; i++) {
             if (chk_display_rows[i].checked) {
                 RowsList[chk_display_rows[i].value].attendance = true;
                 tr_member_attendance += "<th>" + $.i18n.prop(RowsList[chk_display_rows[i].value].i18n) + "</th>";
-                title_arr.push(chk_display_rows[i].value);
             } else {
                 RowsList[chk_display_rows[i].value].attendance = false;
             }
@@ -310,8 +308,7 @@ function setDisplayRowsDialog() {
             tr_member_attendance +
             "<th>" + $.i18n.prop('i_clockIn') + "</th>" +
             "<th>" + $.i18n.prop('i_clockOut') + "</th>");
-        reportVue.titles = title_arr;
-        //set Personal Timeline Title
+
         var count_data = 0;
         for (var j = 0; j < chk_person_data.length; j++) {
             if (chk_person_data[j].checked) {
@@ -327,6 +324,7 @@ function setDisplayRowsDialog() {
             }
         }
         $("#report_person_timeline").html("<tr>" + tr_person_timeline + "</tr>");
+
         dialog.dialog("close");
     }
 

@@ -1,10 +1,12 @@
+var isStart = false;
+
 function searchNetworkCards() {
     var xmlHttp = createJsonXmlHttp("Command");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText),
                 cookie = typeof (Cookies.get("local_ip")) == 'undefined' ? "" : Cookies.get("local_ip");
-            if (checkTokenAlive(token, revObj)) {
+            if (checkTokenAlive(revObj)) {
                 var revInfo = revObj.Value[0];
                 document.getElementById("local_ip").value = revInfo[0].ip;
                 var html = "";
@@ -44,7 +46,7 @@ function searchDevices() {
                 return;
             }
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj)) {
+            if (checkTokenAlive(revObj)) {
                 var revInfo = revObj.Value ? revObj.Value[0] : [];
                 $("#sel_device_ip").empty();
                 ipPortList = {};
@@ -75,24 +77,59 @@ function searchDevices() {
 }
 
 function StartClick() {
+    if (!isStart) {
+        isStart = true;
+        sendLaunchCmd("Start");
+        document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-pause\">" +
+            "</i><span>" + $.i18n.prop('i_stopPositioning') + "</span>";
+    } else {
+        isStart = false;
+        sendLaunchCmd("Stop");
+        document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-play\">" +
+            "</i><span>" + $.i18n.prop('i_startPositioning') + "</span>";
+    }
+
+}
+
+function sendLaunchCmd(switch_type) {
     var requestArray = {
         "Command_Type": ["Write"],
         "Command_Name": ["Launch"],
+        "Value": switch_type,
         "api_token": [token]
     };
-    if (!PageSettings.FirstFloor["Reference"].SecondFloor["start"].isStart) {
-        requestArray.Value = "Start";
-        sidebarVue.launch(true);
-    } else {
-        requestArray.Value = "Stop";
-        sidebarVue.launch(false);
-    }
     var xmlHttp = createJsonXmlHttp("test2");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-            var revObj = JSON.parse(this.responseText),
-                pass = checkTokenAlive(token, revObj);
+            if (checkTokenAlive(JSON.parse(this.responseText)))
+                return true;
+            else
+                return false;
         }
     };
     xmlHttp.send(JSON.stringify(requestArray));
+}
+
+function restartLaunch() {
+    isStart = false;
+    var requestArray = {
+        "Command_Type": ["Write"],
+        "Command_Name": ["Launch"],
+        "Value": "Stop",
+        "api_token": [token]
+    };
+    var xmlHttp = createJsonXmlHttp("test2");
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+            if (checkTokenAlive(JSON.parse(this.responseText))) {
+                isStart = true;
+                sendLaunchCmd("Start");
+                document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-pause\">" +
+                    "</i><span>" + $.i18n.prop('i_stopPositioning') + "</span>";
+            }
+        }
+    };
+    xmlHttp.send(JSON.stringify(requestArray));
+    document.getElementById("btn_start").innerHTML = "<i class=\"fas fa-play\">" +
+        "</i><span>" + $.i18n.prop('i_startPositioning') + "</span>";
 }

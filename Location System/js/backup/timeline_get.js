@@ -1,6 +1,4 @@
 var noImagePng = "../image/no_image.png";
-
-var token = "";
 var PIXEL_RATIO; // 獲取瀏覽器像素比
 var cvsBlock, canvas, ctx;
 var canvasImg = {
@@ -37,12 +35,10 @@ $(function () {
     var h = document.documentElement.clientHeight;
     //$(".container").css("height", h - 10 + "px");
     $("#cvsBlock").css("height", h - 100 + "px");
+    
     //Check this page's permission and load navbar
-    token = getToken();
-    if (!getPermissionOfPage("Timeline")) {
-        alert("Permission denied!");
-        window.location.href = '../index.html';
-    }
+    loadUserData();
+    checkPermissionOfPage("Timeline");
     setNavBar("Timeline", "");
 
     $('.timepicker').bootstrapMaterialDatePicker({
@@ -204,7 +200,7 @@ function setup() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                 $("#target_map").empty();
                 revObj.Value[0].Values.forEach(function (element) {
                     //mapCollection => key: map_id | value: {map_id, map_name, map_src, map_scale}
@@ -241,7 +237,7 @@ function getMemberNumber() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (!checkTokenAlive(token, revObj)) {
+            if (!checkTokenAlive(revObj)) {
                 return;
             } else if (revObj.Value[0].success > 0) {
                 var memberArray = revObj.Value[0].Values || [];
@@ -288,7 +284,7 @@ function getMemberData(user_id) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 if ("Values" in revObj.Value[0]) {
                     var revInfo = revObj.Value[0].Values[0];
                     if (revInfo.file_ext == "" || revInfo.photo == "")
@@ -418,7 +414,7 @@ function getTimelineByTags(datetime_start, datetime_end) {
                     return;
                 }
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                     var revInfo = revObj.Value[0].Values || [];
                     var tag_id = request.Value.tag_id;
                     for (i = 0; i < revInfo.length; i++) {
@@ -483,7 +479,7 @@ function getTimelineByGroup(datetime_start, datetime_end, group_id) {
     getMapGroup.onreadystatechange = function () {
         if (getMapGroup.readyState == 4 || getMapGroup.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                 var revInfo = revObj.Value[0].Values || [];
                 var index = revInfo.findIndex(function (info) {
                     return info.group_id == group_id;
@@ -532,7 +528,7 @@ function getTimelineByGroup(datetime_start, datetime_end, group_id) {
                     return;
                 }
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                     var revInfo = revObj.Value[0].Values || [];
                     for (i = 0; i < revInfo.length; i++) {
                         //改成按照時間分類排序
@@ -609,7 +605,7 @@ function getAlarmHandleByTime() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var MemberList = {};
                 var revInfo = revObj.Value[0].Values || [];
                 revInfo.forEach(function (element) {
@@ -619,7 +615,7 @@ function getAlarmHandleByTime() {
                 xmlHttp2.onreadystatechange = function () {
                     if (xmlHttp2.readyState == 4 || xmlHttp2.readyState == "complete") {
                         var revObj2 = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj2) && revObj2.Value[0]) {
+                        if (checkTokenAlive(revObj2) && revObj2.Value[0]) {
                             var revInfo = revObj2.Value[0].Values;
                             if (revObj2.Value[0].success == 0 || !revInfo || revInfo.length == 0)
                                 return alert($.i18n.prop('i_searchNoData'));

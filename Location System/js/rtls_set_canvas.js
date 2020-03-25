@@ -169,7 +169,7 @@ function RTLS_Canvas(number) {
                 jxh.onreadystatechange = function () {
                     if (jxh.readyState == 4 || jxh.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                             var anchorList = revObj.Value[0].Values,
                                 x, y;
                             for (var i in anchorList) {
@@ -200,7 +200,7 @@ function RTLS_Canvas(number) {
                 jxh_main.onreadystatechange = function () {
                     if (jxh_main.readyState == 4 || jxh_main.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                             var anchorList = revObj.Value[0].Values,
                                 x, y;
                             for (var i in anchorList) {
@@ -233,7 +233,7 @@ function RTLS_Canvas(number) {
                 jxh.onreadystatechange = function () {
                     if (jxh.readyState == 4 || jxh.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                             var revInfo = revObj.Value[0].Values || [];
                             for (var i = 0; i < revInfo.length; i++) {
                                 fenceList[revInfo[i].fence_id] = {
@@ -262,7 +262,7 @@ function RTLS_Canvas(number) {
                 jxh.onreadystatechange = function () {
                     if (jxh.readyState == 4 || jxh.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                             var revInfo = revObj.Value[0].Values || [];
                             for (var i = 0; i < revInfo.length; i++)
                                 fenceList[fence_id].dots.push(revInfo[i]);
@@ -531,7 +531,7 @@ function RTLS_Canvas(number) {
 
     this.draw = draw; //讓外部也可以使用此物件內的繪製方法
 
-    this.Map_id = function () { //從外部取得此物件的當前地圖ID
+    this.getNowMap = function () { //從外部取得此物件的當前地圖ID
         return Map_id;
     };
 

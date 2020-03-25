@@ -7,7 +7,6 @@ var map_id = "",
     addFenceDotArray = [],
     addFenceContainGroup = [],
     pageTimer = {}, //定義計時器全域變數
-
     PIXEL_RATIO, // 獲取瀏覽器像素比
     cvsBlock, canvas, ctx,
     canvasImg = {
@@ -83,7 +82,7 @@ function loadMaps() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (!checkTokenAlive(token, revObj)) {
+            if (!checkTokenAlive(revObj)) {
                 return;
             } else if (revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values || [];
@@ -107,7 +106,6 @@ function loadMaps() {
     };
     xmlHttp.send(JSON.stringify(requestArray));
 }
-
 
 function setMapById(id) { //選擇地圖(下拉選單)後，依據map_id抓取對應資訊
     map_id = id;
@@ -278,7 +276,7 @@ function updateFenceTable() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (!checkTokenAlive(token, revObj)) {
+            if (!checkTokenAlive(revObj)) {
                 return;
             } else if (revObj.Value[0].success > 0) {
                 fenceArray = "Values" in revObj.Value[0] ? revObj.Value[0].Values.slice(0) : [];
@@ -293,7 +291,7 @@ function updateFenceTable() {
                         "<td name=\"fence_name\">" + fenceArray[i].fence_name + "</td>" +
                         "<td><label for=\"btn_edit_fence_" + i + "\" class='btn-edit' title='" + $.i18n.prop('i_editFence') + "'>" +
                         "<i class='fas fa-edit' style='font-size:18px;'></i></label><input id=\"btn_edit_fence_" + i + "\"" +
-                        " type='button' class='btn-hidden' onclick=\"editFenceInfo(\'" + fenceArray[i].fence_id + "\');\" />" +
+                        " type='button' class='btn-hidden' onclick=\"FenceFunc.edit(\'" + fenceArray[i].fence_id + "\');\" />" +
                         "</td></tr>");
                     getFencePointArray(fenceArray[i].fence_id);
                     getFences();
@@ -319,7 +317,7 @@ function getFencePointArray(fence_id) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (!checkTokenAlive(token, revObj)) {
+            if (!checkTokenAlive(revObj)) {
                 return;
             } else if (revObj.Value[0].success > 0) {
                 var arr = revObj.Value[0].Values || [];
@@ -351,7 +349,7 @@ function getFences() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (!checkTokenAlive(token, revObj))
+            if (!checkTokenAlive(revObj))
                 return;
             else if (revObj.Value[0].success > 0)
                 fenceArray = "Values" in revObj.Value[0] ? revObj.Value[0].Values.slice(0) : [];
@@ -376,7 +374,7 @@ function getGroups() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (!checkTokenAlive(token, revObj)) {
+            if (!checkTokenAlive(revObj)) {
                 return;
             } else if (revObj.Value[0].success > 0) {
                 var mapGroups = revObj.Value[0].Values || [];
@@ -407,7 +405,7 @@ function getAnchor_Group() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (!checkTokenAlive(token, revObj)) {
+            if (!checkTokenAlive(revObj)) {
                 return;
             } else if (revObj.Value[0].success > 0) {
                 anchorGroupArray = "Values" in revObj.Value[0] ? revObj.Value[0].Values.slice(0) : [];

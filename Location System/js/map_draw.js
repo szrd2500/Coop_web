@@ -41,14 +41,6 @@ function setupCanvas() {
     canvas.addEventListener("mousedown", handleMouseDown, false);
     cvsBlock.addEventListener("mousewheel", handleMouseWheel, false); // mousewheel duplicates dblclick function
     cvsBlock.addEventListener("DOMMouseScroll", handleMouseWheel, false); // for Firefox
-
-    $(function () {
-        $("#map_info_scale").on("change", function () {
-            canvasImg.scale = $(this).val();
-            catchMap_Anchors();
-            draw();
-        });
-    });
 }
 
 function setMap(map_url, map_scale) { //接收Server發送的地圖資料並導入
@@ -237,9 +229,9 @@ function handleMouseDown(event) { //滑鼠按下綁定事件
                     var set_x = anchorArray[index].x.toFixed(2);
                     var set_y = (canvasImg.height - anchorArray[index].y).toFixed(2);
                     if (anchorArray[index].type == "main") {
-                        editGroupList(anchorArray[index].id, set_x, set_y)
+                        GroupListFunc.edit(anchorArray[index].id, set_x, set_y)
                     } else {
-                        editGroup_Anchor(anchorArray[index].id, set_x, set_y);
+                        GroupAnchorFunc.edit(anchorArray[index].id, set_x, set_y);
                     }
                 });
             });
@@ -269,16 +261,16 @@ function getPointOnCanvas(x, y) {
 
 function getAllDataOfMap() {
     anchorArray = [];
-    getMaps_Groups();
-    getAnchorList();
-    getAnchor_Group();
-    getGroupList();
+    MapGroupFunc.Request.Get.all();
+    AnchorListFunc.Request.get();
+    GroupAnchorFunc.Request.get();
+    GroupListFunc.Request.get();
     draw();
 }
 
 function draw() {
     setSize();
-    drawGroups(anchorArray);
+    GroupListFunc.draw(anchorArray);
     anchorArray.forEach(function (v) {
         drawAnchor(ctx, v.id, v.type, v.x, v.y, 1 / Zoom);
     });
@@ -356,7 +348,7 @@ function handleMainAnchorPosition() {
         $("#add_grouplist_id").val("");
         $("#add_group_id_alert").empty();
         $("#add_grouplist_name").val("");
-        $("#add_grouplist_main_anchor").html(getMainAnchorDropdown(""));
+        $("#add_grouplist_main_anchor").html(GroupListFunc.Get.mainAnchorDropdown(""));
         $("#add_grouplist_main_anchor_x").val($("#x").text());
         $("#add_grouplist_main_anchor_y").val($("#y").text());
         $("#dialog_add_group_list").dialog("open");
@@ -368,7 +360,7 @@ function handleAnchorPosition() {
         $("#label_edit_group_add").show();
         $("#label_edit_group_delete").show();
         $("#table_edit_group_ids tbody").empty();
-        $("#edit_group_anchor").html(getAnchorDropdown("")).prop("disabled", false);
+        $("#edit_group_anchor").html(GroupListFunc.Get.anchorDropdown("")).prop("disabled", false);
         $("#edit_group_anchor_x").val($("#x").text());
         $("#edit_group_anchor_y").val($("#y").text());
         $("#dialog_edit_anchor_group").dialog("open");

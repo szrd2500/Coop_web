@@ -1,4 +1,5 @@
-var default_color = '#2eb82e',
+var permission = "0",
+    default_color = '#2eb82e',
     memberArray = [],
     deptColorArray = [],
     titleColorArray = [],
@@ -12,7 +13,7 @@ var default_color = '#2eb82e',
 
 
 $(function () {
-    //Check this page's permission and load navbar
+    /* Check this page's permission and load navbar */
     loadUserData();
     checkPermissionOfPage("Member_Setting");
     setNavBar("Member_Setting", "Member_Setting");
@@ -37,7 +38,7 @@ $(function () {
     deptXmlHttp.onreadystatechange = function () {
         if (deptXmlHttp.readyState == 4 || deptXmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values || [];
                 for (var i = 0; i < revInfo.length; i++)
                     deptColorArray.push(revInfo[i]);
@@ -54,7 +55,7 @@ $(function () {
     titleXmlHttp.onreadystatechange = function () {
         if (titleXmlHttp.readyState == 4 || titleXmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values || [];
                 revInfo.forEach(function (element) {
                     titleColorArray.push(element);
@@ -72,7 +73,7 @@ $(function () {
     userTypeXmlHttp.onreadystatechange = function () {
         if (userTypeXmlHttp.readyState == 4 || userTypeXmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values || [];
                 revInfo.forEach(function (element) {
                     userTypeColorArray.push(element);
@@ -189,7 +190,7 @@ function UpdateMemberList() {
     getXmlHttp.onreadystatechange = function () {
         if (getXmlHttp.readyState == 4 || getXmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revList = revObj.Value[0].Values || [];
                 alarmGroupArr = [];
                 revList.forEach(function (element) {
@@ -207,7 +208,7 @@ function UpdateMemberList() {
                 xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                         var revObj2 = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj2) && revObj2.Value[0].success > 0) {
+                        if (checkTokenAlive(revObj2) && revObj2.Value[0].success > 0) {
                             $(function () {
                                 $("#table_member_setting tbody").empty(); //先重置表格
                                 memberArray = revObj2.Value[0].Values.slice(0) || [];
@@ -265,7 +266,7 @@ function editMemberData(number) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values[0];
                 $("#main_tid_id").val(parseInt(revInfo.tag_id.substring(0, 8), 16));
                 $("#main_user_id").val(parseInt(revInfo.tag_id.substring(8), 16));
@@ -330,7 +331,7 @@ function editMemberData(number) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values[0]
                 //$("#main_picture_thumbnail").attr("href", "data:image/png;base64," + revInfo.photo);
                 $("#main_picture_img").attr("src", "data:image/png;base64," + revInfo.photo);
@@ -471,7 +472,7 @@ function removeMemberDatas() {
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                     UpdateMemberList();
                 }
             }
@@ -506,7 +507,7 @@ function multiEditData() {
                 xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                             var revInfo = revObj.Value[0].Values || [],
                                 deptArr = [];
                             revInfo.forEach(function (element) {
@@ -532,7 +533,7 @@ function multiEditData() {
                 xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                             var revInfo = revObj.Value[0].Values || [],
                                 titleArr = [];
                             revInfo.forEach(function (element) {
@@ -558,7 +559,7 @@ function multiEditData() {
                 xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                             var revInfo = revObj.Value[0].Values || [],
                                 typeArr = [];
                             revInfo.forEach(function (element) {
@@ -581,7 +582,7 @@ function multiEditData() {
                 xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                             var revInfo = revObj.Value[0].Values || [],
                                 alarmGroupArr = [];
                             revInfo.forEach(function (element) {

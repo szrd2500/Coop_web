@@ -1,15 +1,14 @@
-var command_map = {},
-    command_name = "",
+'use strict';
+var command_name = "",
+    command_map = {},
     ipPortList = {};
-    
+
 $(function () {
     var h = document.documentElement.clientHeight;
     $(".table_block").css("max-height", h - 80 + "px");
 
+    /* Check this page's permission and load navbar */
     loadUserData();
-    /**
-     * Check this page's permission and load navbar
-     */
     checkPermissionOfPage("Reference");
     setNavBar("Reference", "Advance_cmd");
 
@@ -93,7 +92,7 @@ function submitCommand() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0]) {
+            if (checkTokenAlive(revObj) && revObj.Value[0]) {
                 var revInfo = revObj.Value[0][0][0];
                 if (revInfo.Command_status == 1 && revInfo.TARGET_IP == target_ip)
                     $("#receive_cmd").val(revInfo.Command_Ack.toUpperCase());

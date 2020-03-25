@@ -41,63 +41,37 @@ function verifyLogin() {
             setCookie('user', account.val(), 7); //保存帐号到cookie，有效期7天
             setCookie('pswd', btoa(password.val()), 7); //保存密码(加密)到cookie，有效期7天
         }
-
-        $.ajax({
-            url: 'user',
-            type: 'POST',
-            async: true,
-            //contentType: 'application/json; charset=UTF-8',
-            dataType: 'json',
-            data: JSON.stringify({
-                "Command_Name": ["login"],
-                "Value": [{
-                    "code": account.val(),
-                    "password": password.val()
-                }]
-            }),
-            success: function (returnData) {
-                console.log(returnData);
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                console.log(xhr.status);
-                console.log(ajaxOptions);
-                console.log(thrownError);
-            }
+        var json_request = JSON.stringify({
+            "Command_Name": ["login"],
+            "Value": [{
+                "code": account.val(),
+                "password": password.val()
+            }]
         });
-
-
-        /* var json_request = JSON.stringify({
-             "Command_Name": ["login"],
-             "Value": [{
-                 "code": account.val(),
-                 "password": password.val()
-             }]
-         });
-         var jxh = createJsonXmlHttp("user");
-         jxh.onreadystatechange = function () {
-             if (jxh.readyState == 4 || jxh.readyState == "complete") {
-                 console.log("res: " + this.responseText);
-                 return;
-                 var revObj = JSON.parse(this.responseText);
-                 if (revObj && revObj.Value[0].success > 0) {
-                     //Verification success
-                     var revInfo = revObj.Value[0].Values;
-                     if (revInfo && revInfo[0].api_token) {
-                         Cookies.set("login_user", JSON.stringify(revInfo[0]));
-                         alert($.i18n.prop('i_loginSuccess'));
-                         history.back();
-                     }
-                 } else {
-                     var msg = revObj.Value[0].Values[0].msg;
-                     if (msg == "Account not find")
-                         alert($.i18n.prop('i_accountNotFound'));
-                     else if (msg == "password error")
-                         alert($.i18n.prop('i_passwordError'));
-                     else
-                         alert($.i18n.prop('i_loginFailed'));
-                 }
-             }
-         };
-         jxh.send(json_request);*/
+        var jxh = createJsonXmlHttp("user");
+        jxh.onreadystatechange = function () {
+            if (jxh.readyState == 4 || jxh.readyState == "complete") {
+                //console.log("res: " + this.responseText);
+                var revObj = JSON.parse(this.responseText);
+                if (revObj && revObj.Value[0].success > 0) {
+                    //Verification success
+                    var revInfo = revObj.Value[0].Values;
+                    if (revInfo && revInfo[0].api_token) {
+                        Cookies.set("login_user", JSON.stringify(revInfo[0]));
+                        alert($.i18n.prop('i_loginSuccess'));
+                        history.back();
+                    }
+                } else {
+                    var msg = revObj.Value[0].Values[0].msg;
+                    if (msg == "Account not find")
+                        alert($.i18n.prop('i_accountNotFound'));
+                    else if (msg == "password error")
+                        alert($.i18n.prop('i_passwordError'));
+                    else
+                        alert($.i18n.prop('i_loginFailed'));
+                }
+            }
+        };
+        jxh.send(json_request);
     }
 }

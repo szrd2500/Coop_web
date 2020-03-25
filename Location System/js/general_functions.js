@@ -199,7 +199,7 @@ function stopDLL(token) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj)) {
+            if (checkTokenAlive(revObj)) {
                 //alert("Position has stopped!");
                 return;
             }
@@ -218,7 +218,7 @@ function startDLL(token) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj)) {
+            if (checkTokenAlive(revObj)) {
                 //alert("Position has stopped!");
                 return;
             }

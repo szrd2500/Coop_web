@@ -156,8 +156,8 @@ var setDialog = {
             var mode = $("#select_canvas_mode").val();
             Cookies.set("separate_canvas", mode);
             canvasMode(mode);
+            dialog.dialog("close");
             loadMapToCanvas();
-            $("#separate_canvas_dialog").dialog("close");
         }
 
         $("#btn_separate_canvas").on("click", function () {

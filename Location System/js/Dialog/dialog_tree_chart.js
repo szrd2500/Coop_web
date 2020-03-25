@@ -2,8 +2,6 @@ var default_color = '#2eb82e';
 var chart_type = "";
 
 $(function () {
-    loadUserData();
-
     var dialog, form,
         select_node = $('#selected-node');
 
@@ -111,7 +109,7 @@ function createChart(type) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                 datascource.children = revObj.Value[0].Values;
             } else {
                 datascource.children = null;

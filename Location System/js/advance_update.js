@@ -1,3 +1,4 @@
+'use strict';
 var fileData = "",
     fileName = "",
     fileArray = [],
@@ -9,10 +10,9 @@ $(function () {
     var h = document.documentElement.clientHeight;
     $("#block_files_list").css("max-height", h - 432 + "px");
 
+    
+    /* Check this page's permission and load navbar */
     loadUserData();
-    /*
-     * Check this page's permission and load navbar
-     */
     checkPermissionOfPage("Reference");
     setNavBar("Reference", "Update");
 
@@ -106,7 +106,7 @@ function sendFileToServer(file_name, index) { //上傳bin檔到Server
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 //當Server回傳接收成功後, 持續向Server傳送取得更新進度的要求
                 if (revObj.Value[0].Status == "Upload OK") {
                     index++;
@@ -181,7 +181,7 @@ function updateFileToDevice() {
         xmlHttp.onreadystatechange = function () {
             if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                     alert($.i18n.prop('i_updateFirmwareOK'));
                 } else {
                     alert($.i18n.prop('i_updateFirmwareFailed'));
@@ -205,7 +205,7 @@ function deleteFileByName() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 getFileList();
                 alert($.i18n.prop('i_deleteFirmwareOK'));
             } else {
@@ -231,7 +231,7 @@ function checkFileByName() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 alert($.i18n.prop('i_checkFirmwareOK'));
             } else {
                 switch (revObj.Value[0].Status) {
@@ -261,7 +261,7 @@ function getFileList() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].FileName ? revObj.Value[0].FileName : [];
                 fileName = ""; //清空指定的檔名
                 $("#block_files_list").empty();

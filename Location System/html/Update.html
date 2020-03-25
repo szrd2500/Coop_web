@@ -8,15 +8,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="../image/logo/favicon.ico" type="image/x-icon" />
     <!--BootStrap3-->
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/import/bootstrap-3.3.7.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/import/bootstrap-3.3.7.min.js"></script>
     <!--JQuery庫-->
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/import/jquery-ui-1.12.1.min.css" />
+    <script type="text/javascript" src="../js/import/jquery-3.3.1.min.js"></script>
     <!-- Add icon library -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../css/import/fontawesome.css" />
     <!-- Icon Navbar-->
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/animate.min.css" />
     <link rel="stylesheet" type="text/css" href="../css/icon_navbar/menu2.css" />
@@ -24,7 +23,7 @@
     <link rel="stylesheet" type="text/css" href="../css/style.css" />
     <link rel="stylesheet" type="text/css" href="../css/login_user.css" />
     <link rel="stylesheet" type="text/css" href="../css/advance_setting_style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script type="text/javascript" src="../js/import/js.cookie.min.js"></script>
     <script type="text/javascript" src="../js/general_functions.js"></script>
     <script type="text/javascript" src="../js/check_permission.js"></script>
     <script type="text/javascript" src="../js/advance_common.js"></script>
@@ -34,41 +33,13 @@
 <body>
     <div class="container">
         <!--icon navbar-->
-        <div id="icon_navbar">
-            <aside class="menu">
-                <div v-bind:class="['menu-left', lock_state == 'unlocked' ? '' : 'locked']">
-                    <nav class="sidebar">
-                        <ul class="nav">
-                            <li v-for="(page, pageName) in parentPages" v-bind:class="{ 'active' : page.isActive }">
-                                <a v-bind:href="page.isActive ? '#' : page.href">
-                                    <i v-bind:class="page.icon"></i><span>{{ i18n(page.text) }}</span>
-                                </a>
-                            </li>
-                            <hr>
-                            <li v-for="(page, pageName) in childPages"
-                                v-bind:class="[page.class, { 'active' : page.isActive }]">
-                                <a v-bind:href="page.href"><i v-bind:class="page.icon" name="child_icon"></i>
-                                    <span>{{ i18n(page.text) }}</span>
-                                </a>
-                            </li>
-                            <hr>
-                            <li class="lock">
-                                <a href="javascript: sidebarVue.lock();">
-                                    <i v-bind:class="['fas', lock_state == 'unlocked' ? 'fa-lock-open' : 'fa-lock']">
-                                    </i><span>{{ lock_state == 'unlocked' ? i18n('i_unlock') : i18n('i_lock') }}</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </aside>
-        </div>
+        <div id="icon_navbar"></div>
 
         <!-- Web Content -->
         <div class="row">
             <div class="col-lg-12 top_nav">
-                <img class="logo" src="../image/logo/yihong_logo.png">
-                <label id="login_user" v-html="getUser()"></label>
+                <img class="logo" src="../image/logo/icon.png">
+                <label id="login_user"></label>
             </div>
             <div class="tool-bar">
                 <label class="i18n" name="i_language"></label>
@@ -82,6 +53,7 @@
 
         <div class="row">
             <div class="col-lg-12">
+                <h3 class="title-shadow">韌體更新</h3>
                 <div class="center">
                     <h4>Update File : </h4>
                     <input type="text" id="update_file" style="width: 100%;" readonly><br><br>
@@ -100,7 +72,7 @@
                             </div>
                         </div>
                     </div>
-                    <br>
+                    
                     <div style="text-align: center;">
                         <button class="btn btn-primary" id="btn_reset">Reset</button>
                         <button class="btn btn-primary" id="btn_upload" style="margin-left: 10px;">
@@ -111,18 +83,14 @@
         </div>
 
         <div class="row">
-            <br>
             <div class="col-lg-12">
                 <div class="network-bar">
                     <label>Network interface card :&nbsp;</label><select id="interface_card"></select> ,&nbsp;
                     <label>Local IP :&nbsp;</label><input type="text" id="local_ip" value="" readonly>
-
                     <label for="search_devices" class="btn-label label-search" title="Search Devices">
                         <i class="fas fa-search"></i></label>
                     <input id="search_devices" type="button" onclick="searchDevices()" class="btn-hidden" />
-
                     <label style="margin-left: 5px;">Device IP :&nbsp;<select id="sel_device_ip"></select></label>
-
                     <label for="btn_update" class="btn-label label-update" title="Update Firmware">
                         <i class="fas fa-upload"></i></label>
                     <input id="btn_update" type="button" class="btn-hidden" />
@@ -146,11 +114,9 @@
             </div>
         </div>
     </div>
-    <!-- i18n -->
+    <!-- i18n 多語言翻譯 -->
     <script type="text/javascript" src="../js/i18n/jquery.i18n.properties.js"></script>
     <script type="text/javascript" src="../js/i18n/language.js"></script>
-    <!-- Vue.js -->
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </body>
 
 </html>

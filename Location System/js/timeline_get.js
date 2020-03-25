@@ -41,14 +41,13 @@ var PIXEL_RATIO, // 獲取瀏覽器像素比
         canvasTop: 0
     };
 
-var alarmListVue = null;
-
 
 $(function () {
     var h = document.documentElement.clientHeight;
     //$(".container").css("height", h - 10 + "px");
     $("#cvsBlock").css("height", h - 102 + "px");
-    //Check this page's permission and load navbar
+    
+    /* Check this page's permission and load navbar */
     loadUserData();
     checkPermissionOfPage("Timeline");
     setNavBar("Timeline", "");
@@ -212,20 +211,7 @@ $(function () {
     });
 
     setup();
-    setVueFunc();
 });
-
-function setVueFunc() {
-    alarmListVue = new Vue({
-        el: '#alarm_table',
-        data: {
-            items: []
-        },
-        methods: {
-            locate: displayAlarmPos
-        }
-    });
-}
 
 function setup() {
     chkUseInputMap = document.getElementById("chk_use_input_map");
@@ -249,12 +235,16 @@ function setup() {
     });
     setMobileEvents();
     getMemberNumber();
-    //get MapList => 
+    /**
+     * 接收並載入Server的地圖資訊
+     * 取出物件所有屬性的方法，參考網址: 
+     * https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+     */
     var xmlHttp = createJsonXmlHttp("sql");
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                 $("#target_map").empty();
                 revObj.Value[0].Values.forEach(function (element) {
                     //MapList => key: map_id | value: {map_id, map_name, map_src, map_scale}
@@ -291,7 +281,7 @@ function getMemberNumber() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (!checkTokenAlive(token, revObj)) {
+            if (!checkTokenAlive(revObj)) {
                 return;
             } else if (revObj.Value[0].success > 0) {
                 var memberArray = revObj.Value[0].Values || [];
@@ -338,7 +328,7 @@ function getMemberData(user_id) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 if ("Values" in revObj.Value[0]) {
                     var revInfo = revObj.Value[0].Values[0];
                     if (revInfo.file_ext == "" || revInfo.photo == "")
@@ -465,7 +455,7 @@ function getTimelineByTags() {
                             return;
                         }
                         var revObj = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                        if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                             var revInfo = revObj.Value[0].location || [{
                                 "Status": "0"
                             }];
@@ -513,7 +503,7 @@ function getTimelineByTags() {
                         return;
                     }
                     var revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                         var event = revObj.Value[0].event || [{
                             "Status": "0"
                         }];
@@ -611,7 +601,7 @@ function getTimelineByGroup(group_id) {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                         var revInfo = revObj.Value[0].Values || [];
                         var index = revInfo.findIndex(function (info) {
                             return info.group_id == group_id;
@@ -655,7 +645,7 @@ function getTimelineByGroup(group_id) {
                         return;
                     }
                     var revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                         var revInfo = revObj.Value[0].location || [{
                             "Status": "0"
                         }];
@@ -699,7 +689,7 @@ function getTimelineByGroup(group_id) {
                         return;
                     }
                     var revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                         var event = revObj.Value[0].event || [{
                             "Status": "0"
                         }];
@@ -780,36 +770,43 @@ function getTimelineByGroup(group_id) {
     return func.getMapGroup();
 }
 
-
 function updateAlarmTable() {
-    var items = [];
+    var count = 0;
+    $("#alarm_table tbody").empty();
     switch (HistoryData["search_type"]) {
         case "Tag":
             for (var tag_id in AlarmList) {
                 for (var time in AlarmList[tag_id]) {
-                    items.push({
-                        status: AlarmList[tag_id][time].alarm_type,
-                        tagId: tag_id,
-                        time: time
-                    });
+                    count++;
+                    $("#alarm_table tbody").append("<tr><td>" + count + "</td>" +
+                        "<td>" + AlarmList[tag_id][time].alarm_type + "</td>" +
+                        "<td>" + parseInt(tag_id, 16) + "</td>" +
+                        "<td>" + time + "</td>" +
+                        "<td><button class=\"btn btn-default btn-focus\"" +
+                        " onclick=\"displayAlarmPos(\'" + tag_id + "\',\'" + time + "\')\">" +
+                        "<img class=\"icon-image\" src=\"../image/target.png\"></button>" +
+                        "</td></tr>");
                 }
             }
             break;
         case "Group":
             for (var time in AlarmList) {
                 for (var tag_id in AlarmList[time]) {
-                    items.push({
-                        status: AlarmList[time][tag_id].alarm_type,
-                        tagId: tag_id,
-                        time: time
-                    });
+                    count++;
+                    $("#alarm_table tbody").append("<tr><td>" + count + "</td>" +
+                        "<td>" + AlarmList[time][tag_id].alarm_type + "</td>" +
+                        "<td>" + parseInt(tag_id, 16) + "</td>" +
+                        "<td>" + time + "</td>" +
+                        "<td><button class=\"btn btn-default btn-focus\"" +
+                        " onclick=\"displayAlarmPos(\'" + time + "\',\'" + tag_id + "\')\">" +
+                        "<img class=\"icon-image\" src=\"../image/target.png\"></button>" +
+                        "</td></tr>");
                 }
             }
             break;
         default:
             break;
     }
-    alarmListVue.items = items;
 }
 
 function getAlarmHandleByTime() {
@@ -817,7 +814,7 @@ function getAlarmHandleByTime() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var MemberList = {};
                 var revInfo = revObj.Value[0].Values || [];
                 revInfo.forEach(function (element) {
@@ -827,7 +824,7 @@ function getAlarmHandleByTime() {
                 xmlHttp2.onreadystatechange = function () {
                     if (xmlHttp2.readyState == 4 || xmlHttp2.readyState == "complete") {
                         var revObj2 = JSON.parse(this.responseText);
-                        if (checkTokenAlive(token, revObj2) && revObj2.Value[0]) {
+                        if (checkTokenAlive(revObj2) && revObj2.Value[0]) {
                             var revInfo = revObj2.Value[0].Values;
                             if (revObj2.Value[0].success == 0 || !revInfo || revInfo.length == 0)
                                 return alert($.i18n.prop('i_searchNoData'));

@@ -1,7 +1,6 @@
-'use strict';
+//'use strict';
 var ALARM_TYPE = ["low_power", "help", "still", "active", "Fence", "stay", "hidden"];
-var userName = "",
-    PIXEL_RATIO, // 獲取瀏覽器像素比
+var PIXEL_RATIO, // 獲取瀏覽器像素比
     MapList = {}, //[map_id]{ map_name, map_file & map_file_ext, map_scale }
     groupfindMap = {},
     MemberList = {},
@@ -39,21 +38,19 @@ var userName = "",
     RedBling = true,
     isFocus = false,
     locating_id = "",
-    canvas_mode = ["1", "2_v", "2_h", "4", "6"],
-    myVue = {}; //Vue.js functions
+    canvas_mode = ["1", "2_v", "2_h", "4", "6"];
 
 
 $(function () {
     //https://www.minwt.com/webdesign-dev/js/16298.html
     var h = document.documentElement.clientHeight,
         w = document.documentElement.clientWidth;
-    $("#content").css("height", h - 82 + "px");
+    $("#content").css("height", h - 88 + "px");
 
-    //Check this page's permission and load navbar
-    loadUserData();
-    userName = userVue.info ? userVue.info.cname : "";
-    checkPermissionOfPage("index");
-    setNavBar("index", "");
+    /* Check this page's permission and load navbar */
+    loadUserData(); //確定登入狀態
+    checkPermissionOfPage("index"); //判斷是否達到使用此頁面的權限，若無則強制返回
+    setNavBar("index", ""); //設定左側的頁面導航欄
 
     //預設彈跳視窗載入後隱藏
     document.getElementById("member_dialog_btn_unlock").onclick = function () {
@@ -78,12 +75,12 @@ $(function () {
         backdrop: false,
         show: false
     });
-    canvas_mode.forEach(function (element, i) {
-        $("#btn_sel_mode" + (i + 1)).on("click", function () {
-            $("#select_canvas_mode").val(element);
-            $(".btn-mode").removeClass("selected").eq(i).addClass("selected");
-        });
-    })
+    canvas_mode.forEach(function (mode, i) {
+        document.getElementById("btn_sel_mode" + (i + 1)).onclick = function () {
+            document.getElementById("select_canvas_mode").value = mode;
+            $(".btn-mode").removeClass('selected').eq(i).addClass('selected');
+        };
+    });
     document.getElementById("select_canvas_mode").onchange = function () {
         canvas_mode.forEach(function (mode, i) {
             if (mode == document.getElementById("select_canvas_mode").value)
@@ -91,77 +88,7 @@ $(function () {
         });
     };
     setup();
-
-    setVueFunc();
 });
-
-function setVueFunc() {
-    myVue = {
-        memberlist: new Vue({
-            el: '#table_rightbar_member_list',
-            data: {
-                infos: [],
-            },
-            methods: {
-                locate: locateTag,
-                reset: function () {
-                    this.info = [];
-                }
-            }
-        }),
-        thumbnail: new Vue({
-            el: '.thumbnail_columns',
-            data: {
-                elements: []
-            },
-            methods: {
-                locate: locateTag,
-                getPhoto: function (v) {
-                    if (v.number.length == 0)
-                        return false;
-                    axios.post('sql', {
-                        "Command_Type": ["Read"],
-                        "Command_Name": ["GetOneStaff"],
-                        "Value": {
-                            "number": v.number
-                        },
-                        "api_token": [token]
-                    }).then(function (response) {
-                        var revObj = response.data;
-                        if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0 && revObj.Value[0].Values) {
-                            var revInfo = revObj.Value[0].Values[0];
-                            if (document.getElementById("alarmCard_number_" + v.index).innerText != v.number)
-                                return false;
-                            if (revInfo.file_ext != "" && revInfo.photo != "")
-                                document.getElementById("alarmCard_img_" + v.index).setAttribute("src",
-                                    "data:image/" + revInfo.file_ext + ";base64," + revInfo.photo);
-                            else
-                                document.getElementById("alarmCard_img_" + v.index).setAttribute("src", noImagePng);
-                        }
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
-                },
-                unlock: function (v) {
-                    if (confirm("是否記錄此事件已處理?\n(若未解除警報原因，警報將會再次發出，請確實完成!)")) {
-                        releaseFocusAlarm(v.id, v.alarm_type);
-                        changeAlarmLight();
-                    }
-                },
-                focus: function (v) {
-                    changeFocusAlarm(v.id, v.alarm_type);
-                    changeAlarmLight();
-                },
-                i18n: function (keyword) {
-                    return $.i18n.prop(keyword);
-                },
-                reset: function () {
-                    this.elements = [];
-                }
-            }
-        })
-    };
-}
 
 function setup() {
     dot_size = getSizeFromCookie();
@@ -280,7 +207,7 @@ function getMaps() {
     jxh.onreadystatechange = function () {
         if (jxh.readyState == 4 || jxh.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values || [];
                 revInfo.forEach(function (v) {
                     MapList[v.map_id] = {
@@ -308,7 +235,7 @@ function getMapGroup() {
     jxh.onreadystatechange = function () {
         if (jxh.readyState == 4 || jxh.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values || [];
                 revInfo.forEach(function (element) {
                     groupfindMap[element.group_id] = element.map_id;
@@ -329,7 +256,7 @@ function getMemberData() {
     jxh.onreadystatechange = function () {
         if (jxh.readyState == 4 || jxh.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values || [];
                 revInfo.forEach(function (element) {
                     var user_id = parseInt(element.tag_id.substring(8), 16);
@@ -352,7 +279,7 @@ function getMemberData() {
 }
 
 function changeAlarmLight() {
-    var alarmSideBar_icon = document.getElementsByName("child_icon")[0];
+    var alarmSideBar_icon = document.getElementById("alarmSideBar_icon");
     if (alarmFilterArr.length > 0) {
         RedBling = !RedBling;
         if (RedBling)
@@ -374,7 +301,7 @@ function updateAlarmHandle() {
     jxh.onreadystatechange = function () {
         if (jxh.readyState == 4 || jxh.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success == 1) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success == 1) {
                 var revInfo = "Values" in revObj.Value[0] ? revObj.Value[0].Values : [],
                     html = "";
                 for (var i = 0; i < revInfo.length; i++) {
@@ -408,7 +335,7 @@ function updateAlarmList() {
     xmlHttp["getAlarm"].onreadystatechange = function () {
         if (xmlHttp["getAlarm"].readyState == 4 || xmlHttp["getAlarm"].readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value) {
+            if (checkTokenAlive(revObj) && revObj.Value) {
                 var revInfo = revObj.Value[0] || [],
                     update = 0,
                     temp_arr = alarmFilterArr;
@@ -438,19 +365,13 @@ function updateAlarmList() {
                         }) > -1 ? 0 : 1; //計算新增筆數
                     }
                 });
+
                 if (update > 0 || alarmFilterArr.length != temp_arr.length) {
                     //Alarm Card & Dialog
-                    var array = [],
-                        isSortUp = $("#btn_sort_alarm i").hasClass("fa-sort-amount-up");
+                    document.getElementsByClassName("thumbnail_columns")[0].innerHTML = "";
                     alarmFilterArr.forEach(function (element, i) {
-                        if (isSortUp)
-                            array.unshift(inputAlarmData(element, i));
-                        else
-                            array.push(inputAlarmData(element, i));
+                        inputAlarmData(element, i);
                     });
-                    myVue.thumbnail.elements = array.slice(0);
-                    //Latest alarm dialog
-                    setAlarmDialog(alarmFilterArr[alarmFilterArr.length - 1]);
                     //Focus the newest alarm tag
                     locateTag(alarmFilterArr[alarmFilterArr.length - 1].id);
                 } else {
@@ -517,74 +438,85 @@ function updateTagList() {
     xmlHttp["getTag"].setRequestHeader("Content-type", "application/json");
     xmlHttp["getTag"].onreadystatechange = function () {
         if (xmlHttp["getTag"].readyState == 4 || xmlHttp["getTag"].readyState == "complete") {
-            var revObj = JSON.parse(this.responseText);
-            if (!checkTokenAlive(token, revObj)) {
-                var revInfo = revObj,
-                    tagArrTemp = {},
-                    update = 0;
-                revInfo.forEach(function (element) { //new tag datas
-                    element["user_id"] = parseInt(element.tag_id.substring(8), 16);
-                    element["number"] = MemberList[element.user_id] ? MemberList[element.user_id].number : "";
-                    element["name"] = MemberList[element.user_id] ? MemberList[element.user_id].name : "";
-                    var old_point = TagList[element.tag_id] ? TagList[element.tag_id].point[frames - 1] : null;
-                    //update tag array
-                    tagArrTemp[element.tag_id] = {
-                        id: element.tag_id,
+            var revInfo = JSON.parse(this.responseText);
+            var isObject = typeof (revInfo) === 'object';
+            if (token == "" || !isObject)
+                return;
+            var tagArrTemp = {},
+                update = 0;
+            revInfo.forEach(function (element) { //new tag datas
+                element["user_id"] = parseInt(element.tag_id.substring(8), 16);
+                element["number"] = MemberList[element.user_id] ? MemberList[element.user_id].number : "";
+                element["name"] = MemberList[element.user_id] ? MemberList[element.user_id].name : "";
+                var old_point = TagList[element.tag_id] ? TagList[element.tag_id].point[frames - 1] : null;
+                //update tag array
+                tagArrTemp[element.tag_id] = {
+                    id: element.tag_id,
+                    user_id: element.user_id,
+                    number: element.number,
+                    name: element.name,
+                    system_time: element.tag_time,
+                    point: inputTagPoints(old_point, element), //create point array
+                    color: MemberList[element.user_id] ? MemberList[element.user_id].color : "",
+                    type: "normal"
+                };
+                update += TagList[element.tag_id] ? 0 : 1;
+            });
+            if (locating_id != "") {
+                var temp = tagArrTemp[locating_id];
+                if (temp) {
+                    delete tagArrTemp[locating_id];
+                    tagArrTemp[locating_id] = temp;
+                }
+            }
+            if (update > 0) { //update member list
+                var html = "";
+                revInfo.sort(function (a, b) {
+                    var A = a.user_id,
+                        B = b.user_id;
+                    return A - B;
+                });
+                revInfo.forEach(function (v, i) {
+                    html += "<tr><td>" + (i + 1) +
+                        "</td><td>" + v.user_id +
+                        "</td><td>" + v.number +
+                        "</td><td>" + v.name +
+                        "</td><td><button class=\"btn btn-default btn-focus\"" +
+                        " onclick=\"locateTag(\'" + v.tag_id + "\')\">" +
+                        "<img class=\"icon-image\" src=\"../image/target.png\"></button>" +
+                        "</td></tr>";
+                });
+                document.getElementById("table_rightbar_member_list").children[1].innerHTML = html; //tbody
+            }
+            tableFilter("table_filter_member", "table_rightbar_member_list");
+            revInfo = null;
+            TagList = tagArrTemp;
+            tagArrTemp = null;
+            //定時比對TagList更新AlarmList
+            AlarmList = {}; //每次更新都必須重置AlarmList
+            alarmFilterArr.forEach(function (element) {
+                if (element.id in TagList) {
+                    //依序將Tag資料放入AlarmList中
+                    AlarmList[element.id] = {
+                        id: element.id,
                         user_id: element.user_id,
                         number: element.number,
                         name: element.name,
-                        system_time: element.tag_time,
-                        point: inputTagPoints(old_point, element), //create point array
-                        color: MemberList[element.user_id] ? MemberList[element.user_id].color : "",
-                        type: "normal"
+                        point: TagList[element.id].point,
+                        alarm_type: element.alarm_type,
+                        alarm_time: element.alarm_time
                     };
-                    update += TagList[element.tag_id] ? 0 : 1;
-                });
-                if (locating_id != "") {
-                    var temp = tagArrTemp[locating_id];
-                    if (temp) {
-                        delete tagArrTemp[locating_id];
-                        tagArrTemp[locating_id] = temp;
-                    }
+                    TagList[element.id].type = "alarm";
                 }
-                if (update > 0) { //update member list
-                    revInfo.sort(function (a, b) {
-                        var A = a.user_id,
-                            B = b.user_id;
-                        return A - B;
-                    });
-                    myVue.memberlist.infos = revInfo;
+            });
+            if (locating_id != "") {
+                var temp = AlarmList[locating_id];
+                if (temp) {
+                    delete AlarmList[locating_id];
+                    AlarmList[locating_id] = temp;
                 }
-                tableFilter("table_filter_member", "table_rightbar_member_list");
-                revInfo = null;
-                TagList = tagArrTemp;
-                tagArrTemp = null;
-                //定時比對TagList更新AlarmList
-                AlarmList = {}; //每次更新都必須重置AlarmList
-                alarmFilterArr.forEach(function (element) {
-                    if (element.id in TagList) {
-                        //依序將Tag資料放入AlarmList中
-                        AlarmList[element.id] = {
-                            id: element.id,
-                            user_id: element.user_id,
-                            number: element.number,
-                            name: element.name,
-                            point: TagList[element.id].point,
-                            alarm_type: element.alarm_type,
-                            alarm_time: element.alarm_time
-                        };
-                        TagList[element.id].type = "alarm";
-                    }
-                });
-                if (locating_id != "") {
-                    var temp = AlarmList[locating_id];
-                    if (temp) {
-                        delete AlarmList[locating_id];
-                        AlarmList[locating_id] = temp;
-                    }
-                }
-                draw();
             }
+            draw();
         }
     };
     xmlHttp["getTag"].send(json_request);
@@ -632,7 +564,7 @@ function releaseFocusAlarm(tag_id, alarm_type) { //解除指定的alarm
         jxh.onreadystatechange = function () {
             if (jxh.readyState == 4 || jxh.readyState == "complete") {
                 var revObj = JSON.parse(this.responseText);
-                if (checkTokenAlive(token, revObj)) {
+                if (checkTokenAlive(revObj)) {
                     var revInfo = revObj.Value[0];
                     if (revInfo.success == 1) {
                         if (document.getElementById("alarm_dialog_id").innerText == parseInt(tag_id.substring(8), 16))
@@ -655,7 +587,7 @@ function unlockFocusAlarm() { //解除定位
 
 function checkMapIsUsed(map_id) {
     var check = canvasArray.findIndex(function (canvas) {
-        return canvas.Map_id() == map_id;
+        return canvas.getNowMap() == map_id;
     });
     if (check == -1) {
         canvasArray[0].inputMap(map_id);
@@ -705,8 +637,7 @@ function search() {
                                 job_title: "",
                                 type: ""
                             };
-                            html += "<tr>" +
-                                "<td>" + v.user_id + "</td>" +
+                            html += "<tr><td>" + v.user_id + "</td>" +
                                 "<td>" + v.number + "</td>" +
                                 "<td>" + v.name + "</td>" +
                                 "<td>" + member_data.dept + "</td>" +

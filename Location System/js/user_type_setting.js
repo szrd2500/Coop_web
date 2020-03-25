@@ -7,7 +7,7 @@ $(function () {
     var h = document.documentElement.clientHeight;
     $(".container").css("height", h - 10 + "px");
 
-    //Check this page's permission and load navbar
+    /* Check this page's permission and load navbar */
     loadUserData();
     checkPermissionOfPage("Member_Setting");
     setNavBar("Member_Setting", "User_Type_Setting");
@@ -73,7 +73,7 @@ $(function () {
             xmlHttp.onreadystatechange = function () {
                 if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
                     var revObj = JSON.parse(this.responseText);
-                    if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+                    if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                         updateTypeList();
                     } else {
                         alert($.i18n.prop('i_alertError_6'));
@@ -128,7 +128,7 @@ function updateTypeList() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 var revInfo = revObj.Value[0].Values;
                 for (i = 0; i < revInfo.length; i++) {
                     $("#table_type_list tbody").append("<tr>" +
@@ -193,7 +193,7 @@ function deleteType(name) {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
             var revObj = JSON.parse(this.responseText);
-            if (checkTokenAlive(token, revObj) && revObj.Value[0].success > 0) {
+            if (checkTokenAlive(revObj) && revObj.Value[0].success > 0) {
                 updateTypeList();
             } else {
                 alert($.i18n.prop('i_alertError_8'));

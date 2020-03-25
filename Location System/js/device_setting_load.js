@@ -17,46 +17,45 @@ var IP_MODE = ["DHCP", "Static"],
     RED_LIGHT = "<img src=\"../image/redLight.png\"/>",
     GREEN_LIGHT = "<img src=\"../image/greenLight.png\"/>";
 var displayRowArray = {
-    "check_all_net_basic": true,
-    "check_all_net_advance": true,
-    "check_all_rf_basic": true,
-    "check_all_rf_advance": true,
-    "row_ip_addr": true,
-    "row_gateway_addr": true,
-    "row_mask_addr": true,
-    "row_client_ip_addr": true,
-    "row_machine_number": true,
-    "row_model": true,
-    "row_tcp_server_port": true,
-    "row_udp_server_port": true,
-    "row_tcp_client_src_port": true,
-    "row_tcp_client_des_port": true,
-    "row_rf_mode": true,
-    "row_rf_version": true,
-    "row_rf_channel": true,
-    "row_rf_datarate": true,
-    "row_rf_preamble_code": true,
-    "row_rf_preamble_len": true,
-    "row_rf_pac": true,
-    "row_rf_sdf_timeoutr": true,
-    "row_rf_prf": true,
-    "row_rf_pg_delay": true,
-    "row_rf_power": true,
-    "row_rf_nsd": true,
-    "row_rf_smartpower": true,
-    "row_rf_ntm": true,
-    "row_rf_mult": true
-};
+        "check_all_net_basic": true,
+        "check_all_net_advance": true,
+        "check_all_rf_basic": true,
+        "check_all_rf_advance": true,
+        "row_ip_addr": true,
+        "row_gateway_addr": true,
+        "row_mask_addr": true,
+        "row_client_ip_addr": true,
+        "row_machine_number": true,
+        "row_model": true,
+        "row_tcp_server_port": true,
+        "row_udp_server_port": true,
+        "row_tcp_client_src_port": true,
+        "row_tcp_client_des_port": true,
+        "row_rf_mode": true,
+        "row_rf_version": true,
+        "row_rf_channel": true,
+        "row_rf_datarate": true,
+        "row_rf_preamble_code": true,
+        "row_rf_preamble_len": true,
+        "row_rf_pac": true,
+        "row_rf_sdf_timeoutr": true,
+        "row_rf_prf": true,
+        "row_rf_pg_delay": true,
+        "row_rf_power": true,
+        "row_rf_nsd": true,
+        "row_rf_smartpower": true,
+        "row_rf_ntm": true,
+        "row_rf_mult": true
+    };
 
 $(function () { //Load
     var h = document.documentElement.clientHeight;
     //$(".container").css("height", h - 10 + "px");
-    $(".middle").css("height", h - 120 + "px");
+    $(".middle").css("height", h - 125 + "px");
 
+    
+    /* Check this page's permission and load navbar */
     loadUserData();
-    /**
-     * Check this page's permission and load navbar
-     */
     checkPermissionOfPage("Anchor_Setting");
     setNavBar("Anchor_Setting", "");
 
